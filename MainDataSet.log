@@ -1,0 +1,190 @@
+-----------------------------------------------------------------------------------------------
+      name:  <unnamed>
+       log:  /Users/apanta1/Desktop/Summer Research 2024/Night_Light_Institutional_Capacity/Mai
+> nDataSet.log
+  log type:  text
+ opened on:   3 Jul 2024, 10:48:19
+
+. 
+. // Load data
+. import delimited "/Users/apanta1/Desktop/Summer Research 2024/Night_Light_Institutional_Capac
+> ity/Local_Gov_Dataset_of_Nepal.csv", clear
+(encoding automatically selected: UTF-8)
+(61 vars, 753 obs)
+
+. 
+. // removing empty rows
+. drop if missing(unit_name)
+(0 observations deleted)
+
+. 
+. //droping municipality without data
+. drop if lisa_total_100_21_22 == "N/A"
+(14 observations deleted)
+
+. replace lisa_total_100_20_21 = lisa_total_100_21_22 if lisa_total_100_20_21 == "N/A"
+(47 real changes made)
+
+. 
+. 
+. // replace lisa_total_100_20_21 =lisa_total_100_21_22 if lisa_total_100_20_21 == "N/A", 
+. 
+. // changing scores to numbers
+. destring lisa_total_100_20_21, replace
+lisa_total_100_20_21: all characters numeric; replaced as double
+
+. 
+. 
+. destring lisa_total_100_21_22, replace
+lisa_total_100_21_22: all characters numeric; replaced as double
+
+. 
+. 
+. egen baseline_nl = rowmean(sum_2014 sum_2015 sum_2016 sum_2017)
+
+. 
+. gen log_baseline_nl = log(baseline_nl)
+
+. 
+. generate chgnl = (log(sum_2021 - sum_2017))
+(4 missing values generated)
+
+. 
+. egen lisa_avg = rowmean(lisa_total_100_20_21 lisa_total_100_21_22)
+
+. 
+. gen ln_popn = log(popn_2021)
+
+. 
+. gen high_school_percent= (popn_highschool_and_equivalent/popn_2021) * 100
+
+. 
+. gen urban_num = 0
+
+. replace urban_num = 1 if unit_type != "Gaunpalika"
+(286 real changes made)
+
+. 
+. gen gov_coalitiion = 0
+
+. replace gov_coalitiion = 1 if politicalaffiliation == "CPN-MC" | politicalaffiliation == "CPN
+> -UML" | politicalaffiliation == "FSFN" | politicalaffiliation == "NSP"
+(432 real changes made)
+
+. 
+. gen female = 0
+
+. replace female = 1 if sex =="Female"
+(14 real changes made)
+
+. 
+. gen over_65 = 0
+
+. replace over_65 = 1 if ageatelection > 65
+(36 real changes made)
+
+. 
+. gen ln_area = log(area_kmsq)
+
+. 
+. gen ln_educ = log(popn_highschool_and_equivalent)
+
+. 
+. // regressions
+. 
+. ssc install estout
+checking estout consistency and verifying not already installed...
+all files already exist and are up to date.
+
+. 
+. * Run regression
+. // regress log_change_nl log_baseline_nl popn_2021 high_school_percent lisa_avg urban_num ove
+> r_65
+. 
+. regress chgnl lisa_avg, r
+
+Linear regression                               Number of obs     =        735
+                                                F(1, 733)         =      26.66
+                                                Prob > F          =     0.0000
+                                                R-squared         =     0.0362
+                                                Root MSE          =     .91609
+
+------------------------------------------------------------------------------
+             |               Robust
+       chgnl | Coefficient  std. err.      t    P>|t|     [95% conf. interval]
+-------------+----------------------------------------------------------------
+    lisa_avg |   .0130183   .0025211     5.16   0.000     .0080689    .0179676
+       _cons |   3.767599   .1636015    23.03   0.000     3.446415    4.088782
+------------------------------------------------------------------------------
+
+. eststo model1
+
+. 
+. regress chgnl lisa_avg log_baseline_nl ln_educ, r
+
+Linear regression                               Number of obs     =        735
+                                                F(3, 731)         =     551.17
+                                                Prob > F          =     0.0000
+                                                R-squared         =     0.5450
+                                                Root MSE          =     .63027
+
+---------------------------------------------------------------------------------
+                |               Robust
+          chgnl | Coefficient  std. err.      t    P>|t|     [95% conf. interval]
+----------------+----------------------------------------------------------------
+       lisa_avg |   .0036766   .0018189     2.02   0.044     .0001057    .0072476
+log_baseline_nl |   .9311707    .025235    36.90   0.000      .881629    .9807124
+        ln_educ |   .1172792   .0188779     6.21   0.000     .0802179    .1543405
+          _cons |  -1.362557   .1848978    -7.37   0.000    -1.725551   -.9995627
+---------------------------------------------------------------------------------
+
+. eststo model2
+
+. 
+. regress chgnl lisa_avg log_baseline_nl ln_educ ln_popn, r
+
+Linear regression                               Number of obs     =        735
+                                                F(4, 730)         =     428.36
+                                                Prob > F          =     0.0000
+                                                R-squared         =     0.5515
+                                                Root MSE          =     .62622
+
+---------------------------------------------------------------------------------
+                |               Robust
+          chgnl | Coefficient  std. err.      t    P>|t|     [95% conf. interval]
+----------------+----------------------------------------------------------------
+       lisa_avg |   .0023172    .001806     1.28   0.200    -.0012284    .0058628
+log_baseline_nl |   .9357544   .0257308    36.37   0.000     .8852392    .9862697
+        ln_educ |   .2920479   .0657009     4.45   0.000     .1630626    .4210332
+        ln_popn |  -.2234407   .0811542    -2.75   0.006    -.3827641   -.0641174
+          _cons |  -.3341544   .3546618    -0.94   0.346    -1.030433    .3621243
+---------------------------------------------------------------------------------
+
+. 
+. regress chgnl lisa_avg log_baseline_nl high_school_percent, r
+
+Linear regression                               Number of obs     =        735
+                                                F(3, 731)         =     484.64
+                                                Prob > F          =     0.0000
+                                                R-squared         =     0.5515
+                                                Root MSE          =     .62579
+
+-------------------------------------------------------------------------------------
+                    |               Robust
+              chgnl | Coefficient  std. err.      t    P>|t|     [95% conf. interval]
+--------------------+----------------------------------------------------------------
+           lisa_avg |    .002572   .0017713     1.45   0.147    -.0009055    .0060495
+    log_baseline_nl |   .9441142   .0248305    38.02   0.000     .8953667    .9928618
+high_school_percent |   .0457296     .00787     5.81   0.000     .0302792    .0611801
+              _cons |  -.8154976   .1838009    -4.44   0.000    -1.176338   -.4546571
+-------------------------------------------------------------------------------------
+
+. 
+. regress chgnl_2 lisa_avg, r
+variable chgnl_2 not found
+r(111);
+
+end of do-file
+
+r(111);
+
