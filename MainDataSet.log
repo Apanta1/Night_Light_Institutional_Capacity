@@ -1,14 +1,12 @@
------------------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------------------------------------------------------------
       name:  <unnamed>
-       log:  /Users/apanta1/Desktop/Summer Research 2024/Night_Light_Institutional_Capacity/Mai
-> nDataSet.log
+       log:  /Users/apanta1/Desktop/Summer Research 2024/Night_Light_Institutional_Capacity/MainDataSet.log
   log type:  text
- opened on:   6 Jul 2024, 09:58:01
+ opened on:   6 Jul 2024, 11:50:25
 
 . 
 . // Load data
-. import delimited "/Users/apanta1/Desktop/Summer Research 2024/Night_Light_Institutional_Capac
-> ity/Local_Gov_Dataset_of_Nepal.csv", clear
+. import delimited "/Users/apanta1/Desktop/Summer Research 2024/Night_Light_Institutional_Capacity/Local_Gov_Dataset_of_Nepal.csv", clear
 (encoding automatically selected: UTF-8)
 (66 vars, 753 obs)
 
@@ -19,24 +17,22 @@
 
 . 
 . //droping municipality without data
-. drop if lisa_total_100_21_22 == "N/A"
-(14 observations deleted)
+. drop if lisa_20_21 == "N/A"
+(53 observations deleted)
 
-. replace lisa_total_100_20_21 = lisa_total_100_21_22 if lisa_total_100_20_21 == "N/A"
-(47 real changes made)
+. drop if lisa_21_22 == "N/A"
+(8 observations deleted)
 
-. 
 . 
 . // replace lisa_total_100_20_21 =lisa_total_100_21_22 if lisa_total_100_20_21 == "N/A", 
 . 
 . // changing scores to numbers
-. destring lisa_total_100_20_21, replace
-lisa_total_100_20_21: all characters numeric; replaced as double
+. destring lisa_20_21, replace
+lisa_20_21: all characters numeric; replaced as double
 
 . 
-. 
-. destring lisa_total_100_21_22, replace
-lisa_total_100_21_22: all characters numeric; replaced as double
+. destring lisa_20_21, replace
+lisa_20_21 already numeric; no replace
 
 . 
 . 
@@ -50,9 +46,6 @@ lisa_total_100_21_22: all characters numeric; replaced as double
 (4 missing values generated)
 
 . 
-. egen lisa_avg = rowmean(lisa_total_100_20_21 lisa_total_100_21_22)
-
-. 
 . gen ln_popn = log(popn_2021)
 
 . 
@@ -62,14 +55,14 @@ lisa_total_100_21_22: all characters numeric; replaced as double
 . gen urban_num = 0
 
 . replace urban_num = 1 if unit_type != "Gaunpalika"
-(286 real changes made)
+(272 real changes made)
 
 . 
 . gen gov_coalitiion = 0
 
-. replace gov_coalitiion = 1 if politicalaffiliation == "CPN-MC" | politicalaffiliation == "CPN
-> -UML" | politicalaffiliation == "FSFN" | politicalaffiliation == "NSP"
-(432 real changes made)
+. replace gov_coalitiion = 1 if politicalaffiliation == "CPN-MC" | politicalaffiliation == "CPN-UML" | politicalaffiliation == "FSFN" | politicalaffiliati
+> on == "NSP"
+(407 real changes made)
 
 . 
 . gen female = 0
@@ -81,7 +74,7 @@ lisa_total_100_21_22: all characters numeric; replaced as double
 . gen over_65 = 0
 
 . replace over_65 = 1 if ageatelection > 65
-(36 real changes made)
+(34 real changes made)
 
 . 
 . gen ln_area = log(area_kmsq)
@@ -90,29 +83,309 @@ lisa_total_100_21_22: all characters numeric; replaced as double
 . gen ln_educ = log(popn_highschool_and_equivalent)
 
 . 
-. // regressions
-. 
-. regress chgnl lisa_avg, r
+end of do-file
 
-Linear regression                               Number of obs     =        735
-                                                F(1, 733)         =      26.66
-                                                Prob > F          =     0.0000
-                                                R-squared         =     0.0362
-                                                Root MSE          =     .91609
+. do "/var/folders/77/r2kbz41j5hz_44s8bp00q04m0000gn/T//SD14574.000000"
 
-------------------------------------------------------------------------------
-             |               Robust
-       chgnl | Coefficient  std. err.      t    P>|t|     [95% conf. interval]
--------------+----------------------------------------------------------------
-    lisa_avg |   .0130183   .0025211     5.16   0.000     .0080689    .0179676
-       _cons |   3.767599   .1636015    23.03   0.000     3.446415    4.088782
-------------------------------------------------------------------------------
-
-. outreg2 using stataoutput1.doc
-command outreg2 is unrecognized
-r(199);
+. egen lisa_avg = rowmean(lisa_20_21 lisa_21_22)
+type mismatch
+r(109);
 
 end of do-file
 
-r(199);
+r(109);
+
+. do "/var/folders/77/r2kbz41j5hz_44s8bp00q04m0000gn/T//SD14574.000000"
+
+. // changing scores to numbers
+. destring lisa_20_21, replace
+lisa_20_21 already numeric; no replace
+
+. destring lisa_21_22, replace
+lisa_21_22: all characters numeric; replaced as double
+
+. 
+end of do-file
+
+. do "/var/folders/77/r2kbz41j5hz_44s8bp00q04m0000gn/T//SD14574.000000"
+
+. egen lisa_avg = rowmean(lisa_20_21 lisa_21_22)
+
+. 
+end of do-file
+
+. do "/var/folders/77/r2kbz41j5hz_44s8bp00q04m0000gn/T//SD14574.000000"
+
+. egen gov_magm_avg = rowmean(gov_magm_20_21 gov_magm_21_22)
+
+. 
+end of do-file
+
+. do "/var/folders/77/r2kbz41j5hz_44s8bp00q04m0000gn/T//SD14574.000000"
+
+. egen org_admin_avg = rowmean(org_admin_20_21 org_admin_21_22)
+
+. egen budg_magm_avg = rowmean(budg_magm_20_21 budg_magm_21_22)
+
+. 
+end of do-file
+
+. do "/var/folders/77/r2kbz41j5hz_44s8bp00q04m0000gn/T//SD14574.000000"
+
+. egen fiscal_magm_avg = rowmean(fiscal_magm_20_21 fiscal_magm_21_22)
+
+. egen service_dev_avg = rowmean(service_dev_20_21 service_dev_21_22)
+
+. 
+end of do-file
+
+. do "/var/folders/77/r2kbz41j5hz_44s8bp00q04m0000gn/T//SD14574.000000"
+
+. egen jud_exe_avg = rowmean(jud_exe_20_21 jud_exe_21_22)
+
+. egen phy_infra_avg = rowmean(phy_infra_20_21 phy_infra_21_22)
+
+. egen soc_inc_avg = rowmean(soc_inc_20_21 soc_inc_21_22)
+
+. 
+end of do-file
+
+. do "/var/folders/77/r2kbz41j5hz_44s8bp00q04m0000gn/T//SD14574.000000"
+
+. egen env_protec_avg = rowmean(env_protec_20_21 env_protec_21_22)
+
+. egen cop_cor_avg = rowmean(cop_cor_20_21 cop_cor_21_22)
+
+. 
+end of do-file
+
+. do "/var/folders/77/r2kbz41j5hz_44s8bp00q04m0000gn/T//SD14574.000000"
+
+. regress chgnl lisa_avg log_baseline_nl gov_magm_avg org_admin_avg budg_magm_avg fiscal_magm_avg service_dev_avg jud_exe_avg phy_infra_avg 
+> soc_inc_avg env_protec_avg cop_cor_avg, r
+note: org_admin_avg omitted because of collinearity.
+
+Linear regression                               Number of obs     =        688
+                                                F(11, 676)        =     129.41
+                                                Prob > F          =     0.0000
+                                                R-squared         =     0.5327
+                                                Root MSE          =       .634
+
+---------------------------------------------------------------------------------
+                |               Robust
+          chgnl | Coefficient  std. err.      t    P>|t|     [95% conf. interval]
+----------------+----------------------------------------------------------------
+       lisa_avg |  -.0386474   .0270269    -1.43   0.153    -.0917142    .0144194
+log_baseline_nl |    .948291   .0272022    34.86   0.000     .8948801    1.001702
+   gov_magm_avg |   .0158493   .0438625     0.36   0.718    -.0702738    .1019723
+  org_admin_avg |          0  (omitted)
+  budg_magm_avg |   .0535477   .0369422     1.45   0.148    -.0189876    .1260829
+fiscal_magm_avg |   .0230654   .0401582     0.57   0.566    -.0557844    .1019152
+service_dev_avg |   .0517339   .0332554     1.56   0.120    -.0135624    .1170302
+    jud_exe_avg |   .0426335   .0350281     1.22   0.224    -.0261434    .1114104
+  phy_infra_avg |   .0728537   .0293469     2.48   0.013     .0152317    .1304757
+    soc_inc_avg |   .0408329   .0352173     1.16   0.247    -.0283155    .1099813
+ env_protec_avg |    .026127   .0319629     0.82   0.414    -.0366316    .0888855
+    cop_cor_avg |   .0898889   .0306892     2.93   0.004     .0296312    .1501465
+          _cons |  -.3789159   .2596077    -1.46   0.145    -.8886502    .1308185
+---------------------------------------------------------------------------------
+
+. 
+end of do-file
+
+. do "/var/folders/77/r2kbz41j5hz_44s8bp00q04m0000gn/T//SD14574.000000"
+
+. regress chgnl log_baseline_nl gov_magm_avg org_admin_avg budg_magm_avg fiscal_magm_avg service_dev_avg jud_exe_avg phy_infra_avg soc_inc_a
+> vg env_protec_avg cop_cor_avg, r
+
+Linear regression                               Number of obs     =        688
+                                                F(11, 676)        =     129.41
+                                                Prob > F          =     0.0000
+                                                R-squared         =     0.5327
+                                                Root MSE          =       .634
+
+---------------------------------------------------------------------------------
+                |               Robust
+          chgnl | Coefficient  std. err.      t    P>|t|     [95% conf. interval]
+----------------+----------------------------------------------------------------
+log_baseline_nl |    .948291   .0272022    34.86   0.000     .8948801    1.001702
+   gov_magm_avg |  -.0227981   .0301792    -0.76   0.450    -.0820543     .036458
+  org_admin_avg |  -.0386474   .0270269    -1.43   0.153    -.0917142    .0144194
+  budg_magm_avg |   .0149003   .0199482     0.75   0.455    -.0242676    .0540681
+fiscal_magm_avg |   -.015582   .0214186    -0.73   0.467    -.0576369    .0264729
+service_dev_avg |   .0130865   .0171187     0.76   0.445    -.0205257    .0466987
+    jud_exe_avg |   .0039861   .0257966     0.15   0.877    -.0466649    .0546372
+  phy_infra_avg |   .0342063   .0125894     2.72   0.007     .0094871    .0589254
+    soc_inc_avg |   .0021855   .0168662     0.13   0.897    -.0309308    .0353019
+ env_protec_avg |  -.0125204   .0180696    -0.69   0.489    -.0479997    .0229589
+    cop_cor_avg |   .0512415   .0161508     3.17   0.002     .0195296    .0829533
+          _cons |  -.3789159   .2596077    -1.46   0.145    -.8886502    .1308185
+---------------------------------------------------------------------------------
+
+. 
+end of do-file
+
+. do "/var/folders/77/r2kbz41j5hz_44s8bp00q04m0000gn/T//SD14574.000000"
+
+. regress chgnl lisa_avg
+
+      Source |       SS           df       MS      Number of obs   =       688
+-------------+----------------------------------   F(1, 686)       =     27.86
+       Model |  22.6877946         1  22.6877946   Prob > F        =    0.0000
+    Residual |  558.730297       686  .814475651   R-squared       =    0.0390
+-------------+----------------------------------   Adj R-squared   =    0.0376
+       Total |  581.418092       687  .846314544   Root MSE        =    .90248
+
+------------------------------------------------------------------------------
+       chgnl | Coefficient  Std. err.      t    P>|t|     [95% conf. interval]
+-------------+----------------------------------------------------------------
+    lisa_avg |   .0141518   .0026814     5.28   0.000     .0088872    .0194165
+       _cons |     3.6806   .1701927    21.63   0.000     3.346438    4.014761
+------------------------------------------------------------------------------
+
+. 
+end of do-file
+
+. do "/var/folders/77/r2kbz41j5hz_44s8bp00q04m0000gn/T//SD14574.000000"
+
+. regress chgnl log_baseline_nl lisa_avg
+
+      Source |       SS           df       MS      Number of obs   =       688
+-------------+----------------------------------   F(2, 685)       =    373.60
+       Model |  303.333191         2  151.666595   Prob > F        =    0.0000
+    Residual |  278.084901       685  .405963358   R-squared       =    0.5217
+-------------+----------------------------------   Adj R-squared   =    0.5203
+       Total |  581.418092       687  .846314544   Root MSE        =    .63715
+
+---------------------------------------------------------------------------------
+          chgnl | Coefficient  Std. err.      t    P>|t|     [95% conf. interval]
+----------------+----------------------------------------------------------------
+log_baseline_nl |   .9603847   .0365266    26.29   0.000     .8886671    1.032102
+       lisa_avg |   .0059337   .0019187     3.09   0.002     .0021665    .0097009
+          _cons |  -.7713573   .2076238    -3.72   0.000    -1.179013   -.3637017
+---------------------------------------------------------------------------------
+
+. 
+end of do-file
+
+. do "/var/folders/77/r2kbz41j5hz_44s8bp00q04m0000gn/T//SD14574.000000"
+
+. regress chgnl log_baseline_nl gov_magm_avg org_admin_avg budg_magm_avg fiscal_magm_avg service_dev_avg jud_exe_avg phy_infra_avg soc_inc_a
+> vg env_protec_avg cop_cor_avg high_school_percent, r
+
+Linear regression                               Number of obs     =        688
+                                                F(12, 675)        =     126.78
+                                                Prob > F          =     0.0000
+                                                R-squared         =     0.5513
+                                                Root MSE          =     .62172
+
+-------------------------------------------------------------------------------------
+                    |               Robust
+              chgnl | Coefficient  std. err.      t    P>|t|     [95% conf. interval]
+--------------------+----------------------------------------------------------------
+    log_baseline_nl |   .9449183    .026435    35.74   0.000     .8930136     .996823
+       gov_magm_avg |  -.0326956   .0301137    -1.09   0.278    -.0918233    .0264321
+      org_admin_avg |  -.0221796   .0270014    -0.82   0.412    -.0751965    .0308372
+      budg_magm_avg |   .0135434   .0194697     0.70   0.487    -.0246851    .0517719
+    fiscal_magm_avg |  -.0122921   .0209441    -0.59   0.557    -.0534156    .0288314
+    service_dev_avg |   .0109888   .0169953     0.65   0.518    -.0223811    .0443587
+        jud_exe_avg |  -.0159247    .025924    -0.61   0.539    -.0668261    .0349766
+      phy_infra_avg |    .029875   .0123338     2.42   0.016     .0056577    .0540922
+        soc_inc_avg |  -.0027416   .0169022    -0.16   0.871    -.0359288    .0304455
+     env_protec_avg |   -.025751    .017757    -1.45   0.147    -.0606166    .0091146
+        cop_cor_avg |   .0462448    .015935     2.90   0.004     .0149566    .0775329
+high_school_percent |   .0452136   .0085148     5.31   0.000      .028495    .0619322
+              _cons |  -.4781074   .2546639    -1.88   0.061    -.9781361    .0219214
+-------------------------------------------------------------------------------------
+
+. 
+end of do-file
+
+. do "/var/folders/77/r2kbz41j5hz_44s8bp00q04m0000gn/T//SD14574.000000"
+
+. regress chgnl log_baseline_nl gov_magm_avg org_admin_avg budg_magm_avg fisc
+> al_magm_avg service_dev_avg jud_exe_avg phy_infra_avg soc_inc_avg env_prote
+> c_avg cop_cor_avg high_school_percent urban_num ageatelection female gov_co
+> alitiion, r
+
+Linear regression                               Number of obs     =        68
+> 8
+                                                F(16, 671)        =      96.3
+> 9
+                                                Prob > F          =     0.000
+> 0
+                                                R-squared         =     0.553
+> 7
+                                                Root MSE          =      .621
+> 9
+
+-----------------------------------------------------------------------------
+> -
+             |               Robust
+       chgnl | Coefficient  std. err.      t    P>|t|     [95% conf. interval
+> ]
+-------------+---------------------------------------------------------------
+> -
+log_baseli~l |   .9375878    .027391    34.23   0.000     .8838055    .991370
+> 2
+gov_magm_avg |   -.030109   .0300292    -1.00   0.316    -.0890715    .028853
+> 5
+org_admin_~g |  -.0218382   .0268955    -0.81   0.417    -.0746477    .030971
+> 3
+budg_magm_~g |   .0166881   .0195855     0.85   0.394    -.0217682    .055144
+> 4
+fiscal_mag~g |  -.0120753    .021318    -0.57   0.571    -.0539333    .029782
+> 6
+service_de~g |   .0091826   .0170281     0.54   0.590    -.0242523    .042617
+> 4
+ jud_exe_avg |   -.012742   .0256413    -0.50   0.619    -.0630889    .037604
+> 9
+phy_infra_~g |    .031052   .0123869     2.51   0.012     .0067302    .055373
+> 9
+ soc_inc_avg |  -.0042256   .0172179    -0.25   0.806    -.0380331    .029581
+> 9
+env_protec~g |  -.0294451   .0179714    -1.64   0.102     -.064732    .005841
+> 8
+ cop_cor_avg |   .0476211   .0160869     2.96   0.003     .0160343    .079207
+> 8
+high_schoo~t |   .0447457   .0083771     5.34   0.000     .0282973    .061194
+> 1
+   urban_num |   .0292611   .0518914     0.56   0.573    -.0726279    .131150
+> 1
+ageatelect~n |  -.0023236   .0024266    -0.96   0.339    -.0070883    .002441
+> 1
+      female |   .2342213   .1306381     1.79   0.073    -.0222873    .490729
+> 9
+gov_coalit~n |  -.0402826   .0516746    -0.78   0.436     -.141746    .061180
+> 8
+       _cons |  -.3462479   .2908492    -1.19   0.234     -.917332    .224836
+> 2
+-----------------------------------------------------------------------------
+> -
+
+. 
+end of do-file
+
+. do "/var/folders/77/r2kbz41j5hz_44s8bp00q04m0000gn/T//SD14574.000000"
+
+. regress cop_cor_avg ageatelection female gov_coalitiion, r
+
+Linear regression                               Number of obs     =        692
+                                                F(3, 688)         =       5.04
+                                                Prob > F          =     0.0018
+                                                R-squared         =     0.0237
+                                                Root MSE          =     1.5771
+
+--------------------------------------------------------------------------------
+               |               Robust
+   cop_cor_avg | Coefficient  std. err.      t    P>|t|     [95% conf. interval]
+---------------+----------------------------------------------------------------
+ ageatelection |   .0249448   .0068139     3.66   0.000     .0115662    .0383233
+        female |   .3133464    .493245     0.64   0.525    -.6550998    1.281793
+gov_coalitiion |   .2007943   .1225183     1.64   0.102    -.0397605     .441349
+         _cons |   .7992681   .3482435     2.30   0.022     .1155205    1.483016
+--------------------------------------------------------------------------------
+
+. 
+end of do-file
 
