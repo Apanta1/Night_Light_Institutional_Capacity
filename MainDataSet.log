@@ -389,3 +389,4 @@ gov_coalitiion |   .2007943   .1225183     1.64   0.102    -.0397605     .441349
 . 
 end of do-file
 
+. exit, clear
