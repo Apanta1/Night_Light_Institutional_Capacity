@@ -1,5 +1,5 @@
-Research Abstract
-
+**Research Abstract
+**
 In my research, I am interested in empirically analyzing the impact of three key potential determinants of economic growth---institutional capacity, educational outcomes, and political leadership---from 2017 to 2021.
 
 In an institutional capacity, I refer to the ability of municipalities to execute their responsibilities reflected through their day-to-day performance and overall accomplishments. I am curious whether stronger institutional capacity is related to better economic growth or not. After preliminary findings, I have microscopically analyzing the most significant aspect of institutional capacity---intergovernmental co-ordination and cooperation.
