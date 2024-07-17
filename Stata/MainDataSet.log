@@ -2,14 +2,14 @@
       name:  <unnamed>
        log:  /Users/apanta1/Desktop/Summer Research 2024/Night_Light_Institutional_Capacity/Stata/MainDataSet.log
   log type:  text
- opened on:  11 Jul 2024, 19:25:01
+ opened on:  17 Jul 2024, 08:54:02
 
 . 
 . // Load data
 . import delimited "/Users/apanta1/Desktop/Summer Research 2024/Night_Light_Institutional_Capacity/Stata/Local_Gov_Dataset_of
 > _Nepal.csv", clear
 (encoding automatically selected: UTF-8)
-(66 vars, 753 obs)
+(70 vars, 753 obs)
 
 . 
 . // removing empty rows
@@ -39,16 +39,29 @@ lisa_21_22: all characters numeric; replaced as double
 . egen baseline_nl = rowmean(sum_2014 sum_2015 sum_2016 sum_2017)
 
 . 
+. gen baseline_nl_km = (baseline_nl/area_kmsq)
+
+. 
 . gen log_baseline_nl = log(baseline_nl)
 
 . 
-. generate rel_chgnl = (log(sum_2021) - log(sum_2017))
+. gen log_baseline_nl_km = log(baseline_nl_km)
+
+. 
+. generate rel_chgnl  = (log(sum_2021) - log(sum_2017))
 
 . 
 . gen ln_popn = log(popn_2021)
 
 . 
-. gen high_school_percent= (popn_highschool_and_equivalent/popn_2021) * 100
+. gen secondary_percent = (((popn_secondary+popn_highschool+popn_graduate+popn_post_graduate)/popn_2021) * 100)
+
+. 
+. 
+. gen high_school_percent= (((popn_highschool+popn_graduate+popn_post_graduate)/popn_2021) * 100)
+
+. 
+. gen graduate_percent= (((popn_graduate+popn_post_graduate)/popn_2021) * 100)
 
 . 
 . gen urban_num = 0
@@ -88,166 +101,222 @@ lisa_21_22: all characters numeric; replaced as double
 . 
 . //initial regression
 . 
-. regress rel_chgnl lisa_avg, r
+. regress rel_chgnl  log_baseline_nl, r
 
 Linear regression                               Number of obs     =        692
-                                                F(1, 690)         =       4.27
-                                                Prob > F          =     0.0391
-                                                R-squared         =     0.0099
-                                                Root MSE          =     .16328
+                                                F(1, 690)         =       2.27
+                                                Prob > F          =     0.1321
+                                                R-squared         =     0.0034
+                                                Root MSE          =     .16381
 
-------------------------------------------------------------------------------
-             |               Robust
-   rel_chgnl | Coefficient  std. err.      t    P>|t|     [95% conf. interval]
--------------+----------------------------------------------------------------
-    lisa_avg |   .0012633   .0006112     2.07   0.039     .0000633    .0024633
-       _cons |   .2596789   .0393339     6.60   0.000     .1824505    .3369073
-------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+                |               Robust
+      rel_chgnl | Coefficient  std. err.      t    P>|t|     [95% conf. interval]
+----------------+----------------------------------------------------------------
+log_baseline_nl |   .0141983   .0094171     1.51   0.132    -.0042914     .032688
+          _cons |   .2648583   .0489847     5.41   0.000     .1686814    .3610353
+---------------------------------------------------------------------------------
 
-. outreg2 using v4_intial_regression.doc, replace dec(3)
-v4_intial_regression.doc
+. outreg2 using v3_intial_regression.doc, replace dec(3)
+v3_intial_regression.doc
 dir : seeout
 
 . 
-. regress rel_chgnl lisa_avg high_school_percent, r
+. regress rel_chgnl  log_baseline_nl lisa_avg, r
 
 Linear regression                               Number of obs     =        692
-                                                F(2, 689)         =      19.47
+                                                F(2, 689)         =       2.48
+                                                Prob > F          =     0.0848
+                                                R-squared         =     0.0117
+                                                Root MSE          =     .16325
+
+---------------------------------------------------------------------------------
+                |               Robust
+      rel_chgnl | Coefficient  std. err.      t    P>|t|     [95% conf. interval]
+----------------+----------------------------------------------------------------
+log_baseline_nl |   .0105037    .009166     1.15   0.252    -.0074928    .0285003
+       lisa_avg |   .0011733   .0006059     1.94   0.053    -.0000164     .002363
+          _cons |   .2110047   .0619584     3.41   0.001     .0893548    .3326545
+---------------------------------------------------------------------------------
+
+. outreg2 using v3_intial_regression.doc, append dec(3)
+v3_intial_regression.doc
+dir : seeout
+
+. 
+. regress rel_chgnl  log_baseline_nl lisa_avg high_school_percent, r
+
+Linear regression                               Number of obs     =        692
+                                                F(3, 688)         =      25.94
                                                 Prob > F          =     0.0000
-                                                R-squared         =     0.0829
-                                                Root MSE          =     .15725
+                                                R-squared         =     0.1240
+                                                Root MSE          =      .1538
 
 -------------------------------------------------------------------------------------
                     |               Robust
           rel_chgnl | Coefficient  std. err.      t    P>|t|     [95% conf. interval]
 --------------------+----------------------------------------------------------------
-           lisa_avg |   .0000339   .0006099     0.06   0.956    -.0011636    .0012314
-high_school_percent |   .0154305   .0025585     6.03   0.000     .0104072    .0204539
-              _cons |   .2227384   .0393788     5.66   0.000     .1454216    .3000553
+    log_baseline_nl |   .0029232   .0085299     0.34   0.732    -.0138245    .0196709
+           lisa_avg |  -.0001986   .0006016    -0.33   0.741    -.0013798    .0009827
+high_school_percent |   .0114534   .0013461     8.51   0.000     .0088105    .0140963
+              _cons |   .2189372   .0580662     3.77   0.000      .104929    .3329455
 -------------------------------------------------------------------------------------
 
-. outreg2 using v4_intial_regression.doc, append dec(3)
-v4_intial_regression.doc
+. outreg2 using v3_intial_regression.doc, append dec(3)
+v3_intial_regression.doc
 dir : seeout
 
 . 
-. regress rel_chgnl lisa_avg high_school_percent, r
+. regress rel_chgnl  log_baseline_nl lisa_avg high_school_percent, r
 
 Linear regression                               Number of obs     =        692
-                                                F(2, 689)         =      19.47
+                                                F(3, 688)         =      25.94
                                                 Prob > F          =     0.0000
-                                                R-squared         =     0.0829
-                                                Root MSE          =     .15725
+                                                R-squared         =     0.1240
+                                                Root MSE          =      .1538
 
 -------------------------------------------------------------------------------------
                     |               Robust
           rel_chgnl | Coefficient  std. err.      t    P>|t|     [95% conf. interval]
 --------------------+----------------------------------------------------------------
-           lisa_avg |   .0000339   .0006099     0.06   0.956    -.0011636    .0012314
-high_school_percent |   .0154305   .0025585     6.03   0.000     .0104072    .0204539
-              _cons |   .2227384   .0393788     5.66   0.000     .1454216    .3000553
+    log_baseline_nl |   .0029232   .0085299     0.34   0.732    -.0138245    .0196709
+           lisa_avg |  -.0001986   .0006016    -0.33   0.741    -.0013798    .0009827
+high_school_percent |   .0114534   .0013461     8.51   0.000     .0088105    .0140963
+              _cons |   .2189372   .0580662     3.77   0.000      .104929    .3329455
 -------------------------------------------------------------------------------------
 
-. outreg2 using v4_intial_regression.doc, append dec(3)
-v4_intial_regression.doc
+. outreg2 using v3_intial_regression.doc, append dec(3)
+v3_intial_regression.doc
 dir : seeout
 
 . 
-. regress rel_chgnl lisa_avg high_school_percent ageatelection, r
+. regress rel_chgnl  log_baseline_nl lisa_avg high_school_percent ageatelection, r
 
 Linear regression                               Number of obs     =        692
-                                                F(3, 688)         =      13.04
+                                                F(4, 687)         =      19.46
                                                 Prob > F          =     0.0000
-                                                R-squared         =     0.0835
-                                                Root MSE          =     .15732
+                                                R-squared         =     0.1242
+                                                Root MSE          =     .15389
 
 -------------------------------------------------------------------------------------
                     |               Robust
           rel_chgnl | Coefficient  std. err.      t    P>|t|     [95% conf. interval]
 --------------------+----------------------------------------------------------------
-           lisa_avg |   .0000133   .0006096     0.02   0.983    -.0011836    .0012103
-high_school_percent |   .0153044   .0025495     6.00   0.000     .0102988    .0203101
-      ageatelection |   .0004134   .0006041     0.68   0.494    -.0007727    .0015995
-              _cons |   .2048963   .0488781     4.19   0.000     .1089281    .3008644
+    log_baseline_nl |   .0029382    .008525     0.34   0.730       -.0138    .0196764
+           lisa_avg |  -.0002107   .0006015    -0.35   0.726    -.0013917    .0009704
+high_school_percent |    .011404   .0013485     8.46   0.000     .0087564    .0140516
+      ageatelection |   .0002453   .0006019     0.41   0.684    -.0009364    .0014271
+              _cons |    .208218   .0671452     3.10   0.002     .0763836    .3400523
 -------------------------------------------------------------------------------------
 
-. outreg2 using v4_intial_regression.doc, append dec(3)
-v4_intial_regression.doc
+. outreg2 using v3_intial_regression.doc, append dec(3)
+v3_intial_regression.doc
 dir : seeout
 
 . 
-. regress rel_chgnl lisa_avg high_school_percent ageatelection gov_coalitiion, r
+. regress rel_chgnl  log_baseline_nl lisa_avg high_school_percent ageatelection gov_coalitiion, r
 
 Linear regression                               Number of obs     =        692
-                                                F(4, 687)         =      10.93
+                                                F(5, 686)         =      16.32
                                                 Prob > F          =     0.0000
-                                                R-squared         =     0.0874
-                                                Root MSE          =      .1571
+                                                R-squared         =     0.1277
+                                                Root MSE          =      .1537
 
 -------------------------------------------------------------------------------------
                     |               Robust
           rel_chgnl | Coefficient  std. err.      t    P>|t|     [95% conf. interval]
 --------------------+----------------------------------------------------------------
-           lisa_avg |   .0000676   .0006045     0.11   0.911    -.0011192    .0012545
-high_school_percent |   .0157411   .0025719     6.12   0.000     .0106915    .0207908
-      ageatelection |   .0002647   .0006174     0.43   0.668    -.0009475    .0014769
-     gov_coalitiion |  -.0212109   .0124543    -1.70   0.089     -.045664    .0032422
-              _cons |   .2180014   .0509216     4.28   0.000     .1180207    .3179821
+    log_baseline_nl |   .0021463   .0086465     0.25   0.804    -.0148305     .019123
+           lisa_avg |   -.000144   .0005942    -0.24   0.809    -.0013107    .0010227
+high_school_percent |   .0115901   .0013614     8.51   0.000     .0089171    .0142632
+      ageatelection |   .0001083   .0006171     0.18   0.861    -.0011033    .0013198
+     gov_coalitiion |  -.0198561   .0124039    -1.60   0.110    -.0442103     .004498
+              _cons |   .2245991   .0705029     3.19   0.002     .0861716    .3630265
 -------------------------------------------------------------------------------------
 
-. outreg2 using v4_intial_regression.doc, append dec(3)
-v4_intial_regression.doc
+. outreg2 using v3_intial_regression.doc, append dec(3)
+v3_intial_regression.doc
 dir : seeout
 
 . 
-. regress rel_chgnl lisa_avg high_school_percent ageatelection gov_coalitiion female, r
+. regress rel_chgnl  log_baseline_nl lisa_avg high_school_percent ageatelection gov_coalitiion female, r
 
 Linear regression                               Number of obs     =        692
-                                                F(5, 686)         =       9.30
+                                                F(6, 685)         =      13.88
                                                 Prob > F          =     0.0000
-                                                R-squared         =     0.0895
-                                                Root MSE          =     .15703
+                                                R-squared         =     0.1299
+                                                Root MSE          =     .15362
 
 -------------------------------------------------------------------------------------
                     |               Robust
           rel_chgnl | Coefficient  std. err.      t    P>|t|     [95% conf. interval]
 --------------------+----------------------------------------------------------------
-           lisa_avg |   .0000608   .0006052     0.10   0.920    -.0011275    .0012491
-high_school_percent |   .0155738   .0025956     6.00   0.000     .0104776      .02067
-      ageatelection |   .0003318   .0006228     0.53   0.594    -.0008909    .0015546
-     gov_coalitiion |  -.0211558   .0124804    -1.70   0.091    -.0456601    .0033485
-             female |   .0533113   .0474294     1.12   0.261    -.0398128    .1464355
-              _cons |   .2152889   .0510097     4.22   0.000      .115135    .3154428
+    log_baseline_nl |   .0017561   .0085686     0.20   0.838    -.0150678      .01858
+           lisa_avg |  -.0001526    .000595    -0.26   0.798    -.0013207    .0010156
+high_school_percent |    .011522   .0013743     8.38   0.000     .0088237    .0142203
+      ageatelection |   .0001761   .0006223     0.28   0.777    -.0010457    .0013978
+     gov_coalitiion |  -.0198883   .0124211    -1.60   0.110    -.0442763    .0044997
+             female |   .0553247   .0488319     1.13   0.258    -.0405535     .151203
+              _cons |   .2234493   .0706505     3.16   0.002     .0847318    .3621668
 -------------------------------------------------------------------------------------
 
-. outreg2 using v4_intial_regression.doc, append dec(3)
-v4_intial_regression.doc
+. outreg2 using v3_intial_regression.doc, append dec(3)
+v3_intial_regression.doc
 dir : seeout
 
 . 
-. regress rel_chgnl lisa_avg high_school_percent ageatelection gov_coalitiion female ln_popn, r
+. regress rel_chgnl  log_baseline_nl lisa_avg high_school_percent ageatelection gov_coalitiion female ln_popn, r
 
 Linear regression                               Number of obs     =        692
-                                                F(6, 685)         =      23.15
+                                                F(7, 684)         =      23.23
                                                 Prob > F          =     0.0000
-                                                R-squared         =     0.1738
-                                                Root MSE          =     .14969
+                                                R-squared         =     0.1911
+                                                Root MSE          =     .14823
 
 -------------------------------------------------------------------------------------
                     |               Robust
           rel_chgnl | Coefficient  std. err.      t    P>|t|     [95% conf. interval]
 --------------------+----------------------------------------------------------------
-           lisa_avg |  -.0002565   .0005826    -0.44   0.660    -.0014004    .0008873
-high_school_percent |     .01254   .0021756     5.76   0.000     .0082684    .0168116
-      ageatelection |  -.0001923   .0006089    -0.32   0.752    -.0013879    .0010032
-     gov_coalitiion |  -.0196417   .0118042    -1.66   0.097    -.0428184     .003535
-             female |   .0558213   .0492895     1.13   0.258    -.0409553    .1525979
-            ln_popn |   .0630109    .007072     8.91   0.000     .0491255    .0768963
-              _cons |  -.3628645   .0704583    -5.15   0.000    -.5012046   -.2245244
+    log_baseline_nl |  -.0131135   .0082798    -1.58   0.114    -.0293704    .0031434
+           lisa_avg |  -.0002053   .0005703    -0.36   0.719    -.0013251    .0009145
+high_school_percent |   .0088918   .0012698     7.00   0.000     .0063987    .0113849
+      ageatelection |   -.000233   .0006134    -0.38   0.704    -.0014374    .0009713
+     gov_coalitiion |  -.0191454   .0119074    -1.61   0.108    -.0425249     .004234
+             female |   .0607236   .0507961     1.20   0.232    -.0390114    .1604585
+            ln_popn |   .0571105   .0075627     7.55   0.000     .0422617    .0719593
+              _cons |  -.2346739   .0749656    -3.13   0.002    -.3818642   -.0874836
 -------------------------------------------------------------------------------------
 
-. outreg2 using v4_intial_regression.doc, append dec(3)
-v4_intial_regression.doc
+. outreg2 using v3_intial_regression.doc, append dec(3)
+v3_intial_regression.doc
+dir : seeout
+
+. 
+. regress rel_chgnl  log_baseline_nl lisa_avg high_school_percent ageatelection gov_coalitiion female ln_popn urban_num, r
+
+Linear regression                               Number of obs     =        692
+                                                F(8, 683)         =      20.02
+                                                Prob > F          =     0.0000
+                                                R-squared         =     0.1935
+                                                Root MSE          =     .14811
+
+-------------------------------------------------------------------------------------
+                    |               Robust
+          rel_chgnl | Coefficient  std. err.      t    P>|t|     [95% conf. interval]
+--------------------+----------------------------------------------------------------
+    log_baseline_nl |  -.0120647   .0083409    -1.45   0.149    -.0284417    .0043123
+           lisa_avg |  -.0001898   .0005782    -0.33   0.743     -.001325    .0009455
+high_school_percent |   .0092782   .0013147     7.06   0.000     .0066968    .0118596
+      ageatelection |  -.0002749   .0006155    -0.45   0.655    -.0014833    .0009336
+     gov_coalitiion |  -.0200902   .0119317    -1.68   0.093    -.0435175    .0033371
+             female |   .0589774   .0504663     1.17   0.243    -.0401104    .1580652
+            ln_popn |   .0645189   .0095641     6.75   0.000     .0457404    .0832974
+          urban_num |   -.021865   .0167657    -1.30   0.193    -.0547834    .0110534
+              _cons |  -.3095686   .0991451    -3.12   0.002    -.5042343   -.1149028
+-------------------------------------------------------------------------------------
+
+. outreg2 using v3_intial_regression.doc, append dec(3)
+v3_intial_regression.doc
 dir : seeout
 
 . 
@@ -277,572 +346,879 @@ dir : seeout
 . 
 . //regressions in LISA breakdown
 . 
-. regress rel_chgnl gov_magm_avg, r
+. regress rel_chgnl  log_baseline_nl, r
 
 Linear regression                               Number of obs     =        692
-                                                F(1, 690)         =       0.47
-                                                Prob > F          =     0.4934
-                                                R-squared         =     0.0010
-                                                Root MSE          =     .16401
-
-------------------------------------------------------------------------------
-             |               Robust
-   rel_chgnl | Coefficient  std. err.      t    P>|t|     [95% conf. interval]
--------------+----------------------------------------------------------------
-gov_magm_avg |   .0051195   .0074713     0.69   0.493    -.0095497    .0197887
-       _cons |   .3001091   .0571334     5.25   0.000      .187933    .4122852
-------------------------------------------------------------------------------
-
-. outreg2 using v4_lisa_regression.doc, replace dec(3)
-v4_lisa_regression.doc
-dir : seeout
-
-. 
-. regress rel_chgnl gov_magm_avg org_admin_avg, r
-
-Linear regression                               Number of obs     =        692
-                                                F(2, 689)         =       0.36
-                                                Prob > F          =     0.6952
-                                                R-squared         =     0.0013
-                                                Root MSE          =      .1641
-
--------------------------------------------------------------------------------
-              |               Robust
-    rel_chgnl | Coefficient  std. err.      t    P>|t|     [95% conf. interval]
---------------+----------------------------------------------------------------
- gov_magm_avg |    .007312   .0085758     0.85   0.394    -.0095259    .0241499
-org_admin_avg |  -.0026679   .0060462    -0.44   0.659     -.014539    .0092032
-        _cons |   .2985274   .0569852     5.24   0.000     .1866419     .410413
--------------------------------------------------------------------------------
-
-. outreg2 using lisa_regression.doc, append dec(3)
-lisa_regression.doc
-dir : seeout
-
-. 
-. regress rel_chgnl gov_magm_avg org_admin_avg budg_magm_avg, r
-
-Linear regression                               Number of obs     =        692
-                                                F(3, 688)         =       1.11
-                                                Prob > F          =     0.3460
-                                                R-squared         =     0.0054
-                                                Root MSE          =     .16389
-
--------------------------------------------------------------------------------
-              |               Robust
-    rel_chgnl | Coefficient  std. err.      t    P>|t|     [95% conf. interval]
---------------+----------------------------------------------------------------
- gov_magm_avg |   .0027279   .0086523     0.32   0.753    -.0142602    .0197161
-org_admin_avg |  -.0065421   .0065063    -1.01   0.315    -.0193167    .0062326
-budg_magm_avg |   .0088101    .005187     1.70   0.090    -.0013742    .0189944
-        _cons |   .2918545   .0576619     5.06   0.000     .1786401    .4050688
--------------------------------------------------------------------------------
-
-. outreg2 using v4_lisa_regression.doc, append dec(3)
-v4_lisa_regression.doc
-dir : seeout
-
-. 
-. regress rel_chgnl  gov_magm_avg org_admin_avg budg_magm_avg fiscal_magm_avg, r
-
-Linear regression                               Number of obs     =        692
-                                                F(4, 687)         =       1.09
-                                                Prob > F          =     0.3612
-                                                R-squared         =     0.0064
-                                                Root MSE          =     .16392
+                                                F(1, 690)         =       2.27
+                                                Prob > F          =     0.1321
+                                                R-squared         =     0.0034
+                                                Root MSE          =     .16381
 
 ---------------------------------------------------------------------------------
                 |               Robust
       rel_chgnl | Coefficient  std. err.      t    P>|t|     [95% conf. interval]
 ----------------+----------------------------------------------------------------
-   gov_magm_avg |   .0042088   .0083445     0.50   0.614    -.0121749    .0205926
-  org_admin_avg |  -.0047633   .0069799    -0.68   0.495    -.0184679    .0089412
-  budg_magm_avg |   .0104903   .0055913     1.88   0.061    -.0004879    .0214685
-fiscal_magm_avg |  -.0046944   .0058685    -0.80   0.424    -.0162167    .0068279
-          _cons |   .2966853   .0592699     5.01   0.000     .1803134    .4130571
+log_baseline_nl |   .0141983   .0094171     1.51   0.132    -.0042914     .032688
+          _cons |   .2648583   .0489847     5.41   0.000     .1686814    .3610353
 ---------------------------------------------------------------------------------
 
-. outreg2 using v4_lisa_regression.doc, append dec(3)
-v4_lisa_regression.doc
+. outreg2 using v3_lisa_regression.doc, replace dec(3)
+v3_lisa_regression.doc
 dir : seeout
 
 . 
-. regress rel_chgnl gov_magm_avg org_admin_avg budg_magm_avg fiscal_magm_avg service_dev_avg, r
+. regress rel_chgnl  log_baseline_nl gov_magm_avg org_admin_avg budg_magm_avg fiscal_magm_avg service_dev_avg jud_exe_avg phy
+> _infra_avg soc_inc_avg env_protec_avg cop_cor_avg, r
 
 Linear regression                               Number of obs     =        692
-                                                F(5, 686)         =       2.30
-                                                Prob > F          =     0.0435
-                                                R-squared         =     0.0142
-                                                Root MSE          =      .1634
-
----------------------------------------------------------------------------------
-                |               Robust
-      rel_chgnl | Coefficient  std. err.      t    P>|t|     [95% conf. interval]
-----------------+----------------------------------------------------------------
-   gov_magm_avg |  -.0010073   .0087517    -0.12   0.908    -.0181906     .016176
-  org_admin_avg |  -.0095617   .0069613    -1.37   0.170    -.0232298    .0041064
-  budg_magm_avg |   .0080871   .0055694     1.45   0.147     -.002848    .0190222
-fiscal_magm_avg |  -.0084106   .0061653    -1.36   0.173    -.0205157    .0036946
-service_dev_avg |   .0102158   .0038675     2.64   0.008     .0026221    .0178094
-          _cons |   .2969637   .0589129     5.04   0.000     .1812924    .4126349
----------------------------------------------------------------------------------
-
-. outreg2 using v4_lisa_regression.doc, append dec(3)
-v4_lisa_regression.doc
-dir : seeout
-
-. 
-. regress rel_chgnl gov_magm_avg org_admin_avg budg_magm_avg fiscal_magm_avg service_dev_avg jud_exe_avg, r
-
-Linear regression                               Number of obs     =        692
-                                                F(6, 685)         =       1.96
-                                                Prob > F          =     0.0699
-                                                R-squared         =     0.0142
-                                                Root MSE          =     .16352
-
----------------------------------------------------------------------------------
-                |               Robust
-      rel_chgnl | Coefficient  std. err.      t    P>|t|     [95% conf. interval]
-----------------+----------------------------------------------------------------
-   gov_magm_avg |  -.0010511   .0083277    -0.13   0.900     -.017402    .0152999
-  org_admin_avg |  -.0095419    .006873    -1.39   0.165    -.0230365    .0039527
-  budg_magm_avg |   .0080853   .0055721     1.45   0.147    -.0028551    .0190258
-fiscal_magm_avg |  -.0084402   .0058871    -1.43   0.152    -.0199991    .0031187
-service_dev_avg |   .0101784   .0044484     2.29   0.022     .0014442    .0189125
-    jud_exe_avg |   .0001771   .0063012     0.03   0.978    -.0121949    .0125491
-          _cons |   .2968688   .0604024     4.91   0.000     .1782728    .4154649
----------------------------------------------------------------------------------
-
-. outreg2 using v4_lisa_regression.doc, append dec(3)
-v4_lisa_regression.doc
-dir : seeout
-
-. 
-. regress rel_chgnl gov_magm_avg org_admin_avg budg_magm_avg fiscal_magm_avg service_dev_avg jud_exe_avg phy_infra_avg, r
-
-Linear regression                               Number of obs     =        692
-                                                F(7, 684)         =       3.73
-                                                Prob > F          =     0.0006
-                                                R-squared         =     0.0325
-                                                Root MSE          =     .16211
-
----------------------------------------------------------------------------------
-                |               Robust
-      rel_chgnl | Coefficient  std. err.      t    P>|t|     [95% conf. interval]
-----------------+----------------------------------------------------------------
-   gov_magm_avg |  -.0032671   .0082545    -0.40   0.692    -.0194743      .01294
-  org_admin_avg |  -.0109726   .0068303    -1.61   0.109    -.0243834    .0024382
-  budg_magm_avg |   .0037904    .005573     0.68   0.497    -.0071519    .0147327
-fiscal_magm_avg |   -.009765   .0059504    -1.64   0.101    -.0214482    .0019182
-service_dev_avg |   .0072185   .0045227     1.60   0.111    -.0016616    .0160986
-    jud_exe_avg |  -.0030486   .0063702    -0.48   0.632    -.0155562    .0094589
-  phy_infra_avg |   .0124559   .0032594     3.82   0.000     .0060563    .0188556
-          _cons |   .3367034   .0610513     5.52   0.000     .2168329    .4565738
----------------------------------------------------------------------------------
-
-. outreg2 using v4_lisa_regression.doc, append dec(3)
-v4_lisa_regression.doc
-dir : seeout
-
-. 
-. regress rel_chgnl gov_magm_avg org_admin_avg budg_magm_avg fiscal_magm_avg service_dev_avg jud_exe_avg phy_infra_avg soc_in
-> c_avg, r
-
-Linear regression                               Number of obs     =        692
-                                                F(8, 683)         =       3.35
-                                                Prob > F          =     0.0009
-                                                R-squared         =     0.0328
-                                                Root MSE          =      .1622
-
----------------------------------------------------------------------------------
-                |               Robust
-      rel_chgnl | Coefficient  std. err.      t    P>|t|     [95% conf. interval]
-----------------+----------------------------------------------------------------
-   gov_magm_avg |  -.0033843   .0082692    -0.41   0.682    -.0196204    .0128519
-  org_admin_avg |  -.0113252   .0068269    -1.66   0.098    -.0247294     .002079
-  budg_magm_avg |   .0035755   .0055812     0.64   0.522    -.0073828    .0145338
-fiscal_magm_avg |   -.009794   .0059472    -1.65   0.100    -.0214709    .0018829
-service_dev_avg |   .0066327   .0047366     1.40   0.162    -.0026673    .0159327
-    jud_exe_avg |  -.0030888   .0063723    -0.48   0.628    -.0156004    .0094228
-  phy_infra_avg |   .0121723   .0033385     3.65   0.000     .0056173    .0187274
-    soc_inc_avg |   .0018297   .0037254     0.49   0.623     -.005485    .0091444
-          _cons |   .3396998   .0612122     5.55   0.000     .2195132    .4598864
----------------------------------------------------------------------------------
-
-. outreg2 using v4_lisa_regression.doc, append dec(3)
-v4_lisa_regression.doc
-dir : seeout
-
-. 
-. regress rel_chgnl gov_magm_avg org_admin_avg budg_magm_avg fiscal_magm_avg service_dev_avg jud_exe_avg phy_infra_avg soc_in
-> c_avg env_protec_avg, r
-
-Linear regression                               Number of obs     =        692
-                                                F(9, 682)         =       3.16
-                                                Prob > F          =     0.0010
-                                                R-squared         =     0.0348
-                                                Root MSE          =     .16216
-
----------------------------------------------------------------------------------
-                |               Robust
-      rel_chgnl | Coefficient  std. err.      t    P>|t|     [95% conf. interval]
-----------------+----------------------------------------------------------------
-   gov_magm_avg |   -.003651    .008309    -0.44   0.661    -.0199653    .0126633
-  org_admin_avg |  -.0117845   .0068762    -1.71   0.087    -.0252857    .0017166
-  budg_magm_avg |   .0031098   .0055837     0.56   0.578    -.0078536    .0140732
-fiscal_magm_avg |  -.0099241   .0059434    -1.67   0.095    -.0215936    .0017455
-service_dev_avg |   .0062828   .0047771     1.32   0.189    -.0030968    .0156624
-    jud_exe_avg |  -.0036116   .0063193    -0.57   0.568    -.0160193    .0087961
-  phy_infra_avg |   .0108296   .0035077     3.09   0.002     .0039425    .0177168
-    soc_inc_avg |   .0004826    .003839     0.13   0.900     -.007055    .0080202
- env_protec_avg |   .0064349   .0052311     1.23   0.219    -.0038361    .0167058
-          _cons |   .3442296    .061364     5.61   0.000     .2237445    .4647147
----------------------------------------------------------------------------------
-
-. outreg2 using v4_lisa_regression.doc, append dec(3)
-v4_lisa_regression.doc
-dir : seeout
-
-. 
-. regress rel_chgnl gov_magm_avg org_admin_avg budg_magm_avg fiscal_magm_avg service_dev_avg jud_exe_avg phy_infra_avg soc_in
-> c_avg env_protec_avg cop_cor_avg, r
-
-Linear regression                               Number of obs     =        692
-                                                F(10, 681)        =       4.56
+                                                F(11, 680)        =       4.35
                                                 Prob > F          =     0.0000
-                                                R-squared         =     0.0531
-                                                Root MSE          =     .16073
+                                                R-squared         =     0.0536
+                                                Root MSE          =      .1608
 
 ---------------------------------------------------------------------------------
                 |               Robust
       rel_chgnl | Coefficient  std. err.      t    P>|t|     [95% conf. interval]
 ----------------+----------------------------------------------------------------
-   gov_magm_avg |  -.0062419   .0082697    -0.75   0.451    -.0224791    .0099953
-  org_admin_avg |  -.0120009   .0068538    -1.75   0.080     -.025458    .0014563
-  budg_magm_avg |   .0032345   .0054311     0.60   0.552    -.0074292    .0138982
-fiscal_magm_avg |  -.0110261   .0058418    -1.89   0.060    -.0224963    .0004441
-service_dev_avg |    .006051    .004759     1.27   0.204    -.0032931    .0153952
-    jud_exe_avg |  -.0047486   .0062619    -0.76   0.449    -.0170435    .0075464
-  phy_infra_avg |    .008478   .0035387     2.40   0.017     .0015299    .0154261
-    soc_inc_avg |   -.001251   .0039488    -0.32   0.751    -.0090042    .0065023
- env_protec_avg |   .0020352   .0051377     0.40   0.692    -.0080524    .0121229
-    cop_cor_avg |   .0180003   .0047435     3.79   0.000     .0086867    .0273139
-          _cons |    .384747   .0624444     6.16   0.000     .2621402    .5073537
+log_baseline_nl |   .0059159   .0089098     0.66   0.507    -.0115781      .02341
+   gov_magm_avg |  -.0063494   .0082751    -0.77   0.443    -.0225972    .0098983
+  org_admin_avg |  -.0117688   .0068521    -1.72   0.086    -.0252226    .0016849
+  budg_magm_avg |   .0031106   .0054492     0.57   0.568    -.0075888      .01381
+fiscal_magm_avg |  -.0109383    .005869    -1.86   0.063    -.0224617    .0005852
+service_dev_avg |   .0062937    .004748     1.33   0.185    -.0030289    .0156162
+    jud_exe_avg |  -.0049312    .006241    -0.79   0.430    -.0171852    .0073228
+  phy_infra_avg |   .0083095   .0035467     2.34   0.019     .0013457    .0152733
+    soc_inc_avg |  -.0013267   .0039459    -0.34   0.737    -.0090742    .0064209
+ env_protec_avg |   .0015129   .0051597     0.29   0.769    -.0086179    .0116436
+    cop_cor_avg |   .0179831   .0047545     3.78   0.000     .0086478    .0273184
+          _cons |   .3558342   .0817672     4.35   0.000     .1952877    .5163808
 ---------------------------------------------------------------------------------
 
-. outreg2 using v4_lisa_regression.doc, append dec(3)
-v4_lisa_regression.doc
+. outreg2 using v3_lisa_regression.doc, append dec(3)
+v3_lisa_regression.doc
 dir : seeout
 
 . 
-. regress rel_chgnl gov_magm_avg org_admin_avg budg_magm_avg fiscal_magm_avg service_dev_avg jud_exe_avg phy_infra_avg soc_in
-> c_avg env_protec_avg cop_cor_avg high_school_percent, r
+. regress rel_chgnl  log_baseline_nl gov_magm_avg org_admin_avg budg_magm_avg fiscal_magm_avg service_dev_avg jud_exe_avg phy
+> _infra_avg soc_inc_avg env_protec_avg cop_cor_avg high_school_percent, r
 
 Linear regression                               Number of obs     =        692
-                                                F(11, 680)        =       7.22
+                                                F(12, 679)        =       9.59
                                                 Prob > F          =     0.0000
-                                                R-squared         =     0.1193
-                                                Root MSE          =     .15512
+                                                R-squared         =     0.1542
+                                                Root MSE          =     .15213
 
 -------------------------------------------------------------------------------------
                     |               Robust
           rel_chgnl | Coefficient  std. err.      t    P>|t|     [95% conf. interval]
 --------------------+----------------------------------------------------------------
-       gov_magm_avg |  -.0096758   .0082652    -1.17   0.242    -.0259041    .0065526
-      org_admin_avg |  -.0064958   .0066585    -0.98   0.330    -.0195695    .0065778
-      budg_magm_avg |   .0028488   .0052694     0.54   0.589    -.0074975     .013195
-    fiscal_magm_avg |  -.0098934   .0056791    -1.74   0.082     -.021044    .0012573
-    service_dev_avg |   .0054291   .0046084     1.18   0.239    -.0036194    .0144776
-        jud_exe_avg |  -.0115926   .0061827    -1.88   0.061     -.023732    .0005468
-      phy_infra_avg |   .0070822   .0034724     2.04   0.042     .0002643    .0139001
-        soc_inc_avg |  -.0028904   .0037988    -0.76   0.447    -.0103492    .0045684
-     env_protec_avg |  -.0025381   .0049475    -0.51   0.608    -.0122524    .0071762
-        cop_cor_avg |   .0162241   .0045818     3.54   0.000     .0072279    .0252203
-high_school_percent |   .0152174   .0025925     5.87   0.000     .0101271    .0203076
-              _cons |   .3459769   .0618356     5.60   0.000     .2245654    .4673885
+    log_baseline_nl |   .0019808   .0085459     0.23   0.817    -.0147987    .0187603
+       gov_magm_avg |  -.0085066   .0081753    -1.04   0.298    -.0245585    .0075453
+      org_admin_avg |  -.0052372    .006502    -0.81   0.421    -.0180037    .0075294
+      budg_magm_avg |   .0025136   .0052016     0.48   0.629    -.0076995    .0127267
+    fiscal_magm_avg |   -.009199   .0056005    -1.64   0.101    -.0201954    .0017975
+    service_dev_avg |   .0048615   .0045295     1.07   0.284     -.004032     .013755
+        jud_exe_avg |  -.0109909   .0060967    -1.80   0.072    -.0229616    .0009798
+      phy_infra_avg |   .0063439   .0034355     1.85   0.065    -.0004015    .0130893
+        soc_inc_avg |  -.0019501   .0037988    -0.51   0.608     -.009409    .0055087
+     env_protec_avg |  -.0054278   .0049627    -1.09   0.274    -.0151718    .0043163
+        cop_cor_avg |   .0150636   .0045209     3.33   0.001     .0061871    .0239402
+high_school_percent |   .0111821   .0013866     8.06   0.000     .0084595    .0139047
+              _cons |   .3315902   .0793955     4.18   0.000        .1757    .4874804
 -------------------------------------------------------------------------------------
 
-. outreg2 using v4_lisa_regression.doc, append dec(3)
-v4_lisa_regression.doc
+. outreg2 using v3_lisa_regression.doc, append dec(3)
+v3_lisa_regression.doc
 dir : seeout
 
 . 
+. regress rel_chgnl  log_baseline_nl gov_magm_avg org_admin_avg budg_magm_avg fiscal_magm_avg service_dev_avg jud_exe_avg phy
+> _infra_avg soc_inc_avg env_protec_avg cop_cor_avg high_school_percent ageatelection, r
+
+Linear regression                               Number of obs     =        692
+                                                F(13, 678)        =       8.85
+                                                Prob > F          =     0.0000
+                                                R-squared         =     0.1542
+                                                Root MSE          =     .15224
+
+-------------------------------------------------------------------------------------
+                    |               Robust
+          rel_chgnl | Coefficient  std. err.      t    P>|t|     [95% conf. interval]
+--------------------+----------------------------------------------------------------
+    log_baseline_nl |   .0019811   .0085522     0.23   0.817     -.014811    .0187731
+       gov_magm_avg |  -.0084892   .0081542    -1.04   0.298    -.0244997    .0075214
+      org_admin_avg |  -.0052428   .0064942    -0.81   0.420     -.017994    .0075085
+      budg_magm_avg |   .0025154   .0052071     0.48   0.629    -.0077086    .0127395
+    fiscal_magm_avg |  -.0092051   .0056146    -1.64   0.102    -.0202292    .0018189
+    service_dev_avg |   .0048635   .0045334     1.07   0.284    -.0040376    .0137647
+        jud_exe_avg |  -.0109845   .0060888    -1.80   0.072    -.0229397    .0009707
+      phy_infra_avg |   .0063523   .0034392     1.85   0.065    -.0004006    .0131051
+        soc_inc_avg |  -.0019545   .0038101    -0.51   0.608    -.0094356    .0055265
+     env_protec_avg |  -.0054461   .0049884    -1.09   0.275    -.0152407    .0043485
+        cop_cor_avg |   .0150786   .0045903     3.28   0.001     .0060657    .0240914
+high_school_percent |   .0111856    .001391     8.04   0.000     .0084545    .0139168
+      ageatelection |  -.0000192   .0006008    -0.03   0.975    -.0011989    .0011605
+              _cons |   .3323794   .0869771     3.82   0.000     .1616025    .5031562
+-------------------------------------------------------------------------------------
+
+. outreg2 using v3_lisa_regression.doc, append dec(3)
+v3_lisa_regression.doc
+dir : seeout
+
+. 
+. regress rel_chgnl  log_baseline_nl gov_magm_avg org_admin_avg budg_magm_avg fiscal_magm_avg service_dev_avg jud_exe_avg phy
+> _infra_avg soc_inc_avg env_protec_avg cop_cor_avg high_school_percent ageatelection female, r
+
+Linear regression                               Number of obs     =        692
+                                                F(14, 677)        =       8.52
+                                                Prob > F          =     0.0000
+                                                R-squared         =     0.1569
+                                                Root MSE          =     .15211
+
+-------------------------------------------------------------------------------------
+                    |               Robust
+          rel_chgnl | Coefficient  std. err.      t    P>|t|     [95% conf. interval]
+--------------------+----------------------------------------------------------------
+    log_baseline_nl |   .0014886   .0084154     0.18   0.860    -.0150348    .0180121
+       gov_magm_avg |  -.0087433    .008183    -1.07   0.286    -.0248104    .0073238
+      org_admin_avg |  -.0052563   .0064973    -0.81   0.419    -.0180136    .0075011
+      budg_magm_avg |   .0030687   .0052535     0.58   0.559    -.0072463    .0133838
+    fiscal_magm_avg |  -.0094906   .0056392    -1.68   0.093     -.020563    .0015819
+    service_dev_avg |   .0049332    .004534     1.09   0.277    -.0039691    .0138355
+        jud_exe_avg |  -.0109879   .0060915    -1.80   0.072    -.0229484    .0009725
+      phy_infra_avg |   .0064461   .0034368     1.88   0.061     -.000302    .0131942
+        soc_inc_avg |  -.0023793    .003797    -0.63   0.531    -.0098346    .0050759
+     env_protec_avg |  -.0052971   .0049523    -1.07   0.285    -.0150208    .0044267
+        cop_cor_avg |   .0150582   .0045648     3.30   0.001     .0060953     .024021
+high_school_percent |   .0111036   .0014021     7.92   0.000     .0083505    .0138567
+      ageatelection |   .0000536    .000606     0.09   0.929    -.0011363    .0012436
+             female |    .061139    .048872     1.25   0.211    -.0348199    .1570978
+              _cons |   .3317549   .0870315     3.81   0.000     .1608708     .502639
+-------------------------------------------------------------------------------------
+
+. outreg2 using v3_lisa_regression.doc, append dec(3)
+v3_lisa_regression.doc
+dir : seeout
+
+. 
+. regress rel_chgnl  log_baseline_nl gov_magm_avg org_admin_avg budg_magm_avg fiscal_magm_avg service_dev_avg jud_exe_avg phy
+> _infra_avg soc_inc_avg env_protec_avg cop_cor_avg high_school_percent ageatelection female gov_coalitiion, r
+
+Linear regression                               Number of obs     =        692
+                                                F(15, 676)        =       8.05
+                                                Prob > F          =     0.0000
+                                                R-squared         =     0.1598
+                                                Root MSE          =     .15196
+
+-------------------------------------------------------------------------------------
+                    |               Robust
+          rel_chgnl | Coefficient  std. err.      t    P>|t|     [95% conf. interval]
+--------------------+----------------------------------------------------------------
+    log_baseline_nl |   .0005805   .0085282     0.07   0.946    -.0161645    .0173255
+       gov_magm_avg |  -.0083563   .0081152    -1.03   0.304    -.0242903    .0075777
+      org_admin_avg |  -.0052816    .006487    -0.81   0.416    -.0180187    .0074555
+      budg_magm_avg |   .0034575   .0052521     0.66   0.511    -.0068549    .0137699
+    fiscal_magm_avg |  -.0092278   .0056081    -1.65   0.100    -.0202392    .0017836
+    service_dev_avg |   .0042002     .00446     0.94   0.347    -.0045569    .0129572
+        jud_exe_avg |  -.0103495   .0059477    -1.74   0.082    -.0220278    .0013288
+      phy_infra_avg |   .0069001   .0034352     2.01   0.045     .0001552     .013645
+        soc_inc_avg |  -.0021834   .0038018    -0.57   0.566    -.0096482    .0052813
+     env_protec_avg |  -.0056036   .0049682    -1.13   0.260    -.0153585    .0041514
+        cop_cor_avg |   .0149579    .004569     3.27   0.001     .0059868    .0239291
+high_school_percent |   .0112693   .0014111     7.99   0.000     .0084987    .0140399
+      ageatelection |  -.0000843   .0006173    -0.14   0.891    -.0012964    .0011277
+             female |    .061375   .0504431     1.22   0.224    -.0376691     .160419
+     gov_coalitiion |  -.0185218   .0117623    -1.57   0.116    -.0416168    .0045732
+              _cons |   .3469365   .0895057     3.88   0.000     .1711938    .5226792
+-------------------------------------------------------------------------------------
+
+. outreg2 using v3_lisa_regression.doc, append dec(3)
+v3_lisa_regression.doc
+dir : seeout
+
+. 
+. regress rel_chgnl  log_baseline_nl gov_magm_avg org_admin_avg budg_magm_avg fiscal_magm_avg service_dev_avg jud_exe_avg phy
+> _infra_avg soc_inc_avg env_protec_avg cop_cor_avg high_school_percent ageatelection female gov_coalitiion , r
+
+Linear regression                               Number of obs     =        692
+                                                F(15, 676)        =       8.05
+                                                Prob > F          =     0.0000
+                                                R-squared         =     0.1598
+                                                Root MSE          =     .15196
+
+-------------------------------------------------------------------------------------
+                    |               Robust
+          rel_chgnl | Coefficient  std. err.      t    P>|t|     [95% conf. interval]
+--------------------+----------------------------------------------------------------
+    log_baseline_nl |   .0005805   .0085282     0.07   0.946    -.0161645    .0173255
+       gov_magm_avg |  -.0083563   .0081152    -1.03   0.304    -.0242903    .0075777
+      org_admin_avg |  -.0052816    .006487    -0.81   0.416    -.0180187    .0074555
+      budg_magm_avg |   .0034575   .0052521     0.66   0.511    -.0068549    .0137699
+    fiscal_magm_avg |  -.0092278   .0056081    -1.65   0.100    -.0202392    .0017836
+    service_dev_avg |   .0042002     .00446     0.94   0.347    -.0045569    .0129572
+        jud_exe_avg |  -.0103495   .0059477    -1.74   0.082    -.0220278    .0013288
+      phy_infra_avg |   .0069001   .0034352     2.01   0.045     .0001552     .013645
+        soc_inc_avg |  -.0021834   .0038018    -0.57   0.566    -.0096482    .0052813
+     env_protec_avg |  -.0056036   .0049682    -1.13   0.260    -.0153585    .0041514
+        cop_cor_avg |   .0149579    .004569     3.27   0.001     .0059868    .0239291
+high_school_percent |   .0112693   .0014111     7.99   0.000     .0084987    .0140399
+      ageatelection |  -.0000843   .0006173    -0.14   0.891    -.0012964    .0011277
+             female |    .061375   .0504431     1.22   0.224    -.0376691     .160419
+     gov_coalitiion |  -.0185218   .0117623    -1.57   0.116    -.0416168    .0045732
+              _cons |   .3469365   .0895057     3.88   0.000     .1711938    .5226792
+-------------------------------------------------------------------------------------
+
+. outreg2 using v3_lisa_regression.doc, append dec(3)
+v3_lisa_regression.doc
+dir : seeout
+
+. 
+. regress rel_chgnl log_baseline_nl gov_magm_avg org_admin_avg budg_magm_avg fiscal_magm_avg service_dev_avg jud_exe_avg phy_
+> infra_avg soc_inc_avg env_protec_avg cop_cor_avg high_school_percent ageatelection female gov_coalitiion ln_popn, r
+
+Linear regression                               Number of obs     =        692
+                                                F(16, 675)        =      11.40
+                                                Prob > F          =     0.0000
+                                                R-squared         =     0.2128
+                                                Root MSE          =      .1472
+
+-------------------------------------------------------------------------------------
+                    |               Robust
+          rel_chgnl | Coefficient  std. err.      t    P>|t|     [95% conf. interval]
+--------------------+----------------------------------------------------------------
+    log_baseline_nl |  -.0111537   .0080568    -1.38   0.167    -.0269731    .0046658
+       gov_magm_avg |  -.0063767   .0077888    -0.82   0.413      -.02167    .0089165
+      org_admin_avg |  -.0012051   .0063332    -0.19   0.849    -.0136401      .01123
+      budg_magm_avg |   .0015237   .0050348     0.30   0.762     -.008362    .0114094
+    fiscal_magm_avg |  -.0055101   .0054107    -1.02   0.309     -.016134    .0051139
+    service_dev_avg |   .0039042   .0043529     0.90   0.370    -.0046426     .012451
+        jud_exe_avg |  -.0096086   .0058251    -1.65   0.100     -.021046    .0018288
+      phy_infra_avg |   .0034259   .0033513     1.02   0.307    -.0031544    .0100062
+        soc_inc_avg |   -.000398   .0036595    -0.11   0.913    -.0075833    .0067873
+     env_protec_avg |  -.0103492   .0048338    -2.14   0.033    -.0198403    -.000858
+        cop_cor_avg |   .0147033   .0043824     3.36   0.001     .0060985    .0233082
+high_school_percent |   .0091166   .0012912     7.06   0.000     .0065814    .0116517
+      ageatelection |  -.0004678     .00061    -0.77   0.443    -.0016655      .00073
+             female |   .0621903   .0514834     1.21   0.227    -.0388967    .1632772
+     gov_coalitiion |  -.0174621   .0113645    -1.54   0.125    -.0397761    .0048519
+            ln_popn |   .0552896   .0075778     7.30   0.000     .0404108    .0701684
+              _cons |  -.1409509   .0945094    -1.49   0.136    -.3265188    .0446169
+-------------------------------------------------------------------------------------
+
+. 
+. regress rel_chgnl log_baseline_nl_km gov_magm_avg org_admin_avg budg_magm_avg fiscal_magm_avg service_dev_avg jud_exe_avg p
+> hy_infra_avg soc_inc_avg env_protec_avg cop_cor_avg high_school_percent ageatelection female gov_coalitiion ln_popn, r
+
+Linear regression                               Number of obs     =        692
+                                                F(16, 675)        =      10.79
+                                                Prob > F          =     0.0000
+                                                R-squared         =     0.2109
+                                                Root MSE          =     .14737
+
+-------------------------------------------------------------------------------------
+                    |               Robust
+          rel_chgnl | Coefficient  std. err.      t    P>|t|     [95% conf. interval]
+--------------------+----------------------------------------------------------------
+ log_baseline_nl_km |   .0010958   .0160896     0.07   0.946     -.030496    .0326875
+       gov_magm_avg |  -.0066115   .0077696    -0.85   0.395    -.0218669    .0086439
+      org_admin_avg |  -.0010201     .00632    -0.16   0.872    -.0134294    .0113892
+      budg_magm_avg |   .0013138   .0050432     0.26   0.795    -.0085885    .0112161
+    fiscal_magm_avg |  -.0054581   .0054203    -1.01   0.314    -.0161006    .0051845
+    service_dev_avg |   .0043933   .0043472     1.01   0.313    -.0041423    .0129289
+        jud_exe_avg |  -.0098824    .005836    -1.69   0.091    -.0213414    .0015765
+      phy_infra_avg |   .0032405   .0033498     0.97   0.334    -.0033368    .0098177
+        soc_inc_avg |  -.0005704   .0036145    -0.16   0.875    -.0076674    .0065266
+     env_protec_avg |  -.0110428   .0048213    -2.29   0.022    -.0205093   -.0015763
+        cop_cor_avg |    .014709   .0043945     3.35   0.001     .0060806    .0233374
+high_school_percent |   .0090894   .0013811     6.58   0.000     .0063777    .0118011
+      ageatelection |  -.0004526   .0006155    -0.74   0.462    -.0016611    .0007558
+             female |   .0604502   .0506235     1.19   0.233    -.0389482    .1598486
+     gov_coalitiion |  -.0164973   .0112285    -1.47   0.142    -.0385443    .0055497
+            ln_popn |   .0527601   .0092863     5.68   0.000     .0345267    .0709935
+              _cons |   -.171197    .105737    -1.62   0.106    -.3788099     .036416
+-------------------------------------------------------------------------------------
+
+. outreg2 using v3_lisa_regression.doc, append dec(3)
+v3_lisa_regression.doc
+dir : seeout
+
+. 
+. regress rel_chgnl log_baseline_nl_km gov_magm_avg org_admin_avg budg_magm_avg fiscal_magm_avg service_dev_avg jud_exe_avg p
+> hy_infra_avg soc_inc_avg env_protec_avg cop_cor_avg high_school_percent ageatelection female gov_coalitiion ln_popn urban_n
+> um, r
+
+Linear regression                               Number of obs     =        692
+                                                F(17, 674)        =       9.88
+                                                Prob > F          =     0.0000
+                                                R-squared         =     0.2152
+                                                Root MSE          =     .14708
+
+-------------------------------------------------------------------------------------
+                    |               Robust
+          rel_chgnl | Coefficient  std. err.      t    P>|t|     [95% conf. interval]
+--------------------+----------------------------------------------------------------
+ log_baseline_nl_km |  -.0031547   .0162795    -0.19   0.846    -.0351192    .0288098
+       gov_magm_avg |  -.0069551   .0077772    -0.89   0.371    -.0222255    .0083153
+      org_admin_avg |  -.0012566   .0062383    -0.20   0.840    -.0135054    .0109923
+      budg_magm_avg |   .0011367   .0050776     0.22   0.823     -.008833    .0111065
+    fiscal_magm_avg |  -.0064253   .0053963    -1.19   0.234    -.0170209    .0041702
+    service_dev_avg |   .0049477   .0043443     1.14   0.255    -.0035824    .0134777
+        jud_exe_avg |  -.0110409   .0058775    -1.88   0.061    -.0225813    .0004996
+      phy_infra_avg |   .0038216   .0033415     1.14   0.253    -.0027395    .0103827
+        soc_inc_avg |  -.0005067    .003604    -0.14   0.888    -.0075831    .0065697
+     env_protec_avg |  -.0105253    .004772    -2.21   0.028    -.0198951   -.0011554
+        cop_cor_avg |   .0146964    .004405     3.34   0.001     .0060473    .0233456
+high_school_percent |   .0097107   .0014752     6.58   0.000     .0068141    .0126073
+      ageatelection |  -.0004897   .0006152    -0.80   0.426    -.0016976    .0007182
+             female |   .0578312   .0504107     1.15   0.252    -.0411497    .1568122
+     gov_coalitiion |  -.0177991   .0112672    -1.58   0.115    -.0399222     .004324
+            ln_popn |   .0644081   .0117867     5.46   0.000     .0412651    .0875511
+          urban_num |  -.0295204   .0168345    -1.75   0.080    -.0625748     .003534
+              _cons |  -.2739636   .1268629    -2.16   0.031    -.5230577   -.0248696
+-------------------------------------------------------------------------------------
+
+. outreg2 using v3_lisa_regression.doc, append dec(3)
+v3_lisa_regression.doc
+dir : seeout
+
+. 
+end of do-file
+
+. do "/var/folders/77/r2kbz41j5hz_44s8bp00q04m0000gn/T//SD36569.000000"
+
+. regress rel_chgnl log_baseline_nl, r
+
+Linear regression                               Number of obs     =        692
+                                                F(1, 690)         =       2.27
+                                                Prob > F          =     0.1321
+                                                R-squared         =     0.0034
+                                                Root MSE          =     .16381
+
+---------------------------------------------------------------------------------
+                |               Robust
+      rel_chgnl | Coefficient  std. err.      t    P>|t|     [95% conf. interval]
+----------------+----------------------------------------------------------------
+log_baseline_nl |   .0141983   .0094171     1.51   0.132    -.0042914     .032688
+          _cons |   .2648583   .0489847     5.41   0.000     .1686814    .3610353
+---------------------------------------------------------------------------------
+
+. outreg2 using v3_lisa_regression.doc, replace dec(3)
+v3_lisa_regression.doc
+dir : seeout
+
+. 
+. regress rel_chgnl  log_baseline_nl gov_magm_avg org_admin_avg budg_magm_avg fiscal_magm_avg service_dev_avg jud_exe_avg phy
+> _infra_avg soc_inc_avg env_protec_avg cop_cor_avg, r
+
+Linear regression                               Number of obs     =        692
+                                                F(11, 680)        =       4.35
+                                                Prob > F          =     0.0000
+                                                R-squared         =     0.0536
+                                                Root MSE          =      .1608
+
+---------------------------------------------------------------------------------
+                |               Robust
+      rel_chgnl | Coefficient  std. err.      t    P>|t|     [95% conf. interval]
+----------------+----------------------------------------------------------------
+log_baseline_nl |   .0059159   .0089098     0.66   0.507    -.0115781      .02341
+   gov_magm_avg |  -.0063494   .0082751    -0.77   0.443    -.0225972    .0098983
+  org_admin_avg |  -.0117688   .0068521    -1.72   0.086    -.0252226    .0016849
+  budg_magm_avg |   .0031106   .0054492     0.57   0.568    -.0075888      .01381
+fiscal_magm_avg |  -.0109383    .005869    -1.86   0.063    -.0224617    .0005852
+service_dev_avg |   .0062937    .004748     1.33   0.185    -.0030289    .0156162
+    jud_exe_avg |  -.0049312    .006241    -0.79   0.430    -.0171852    .0073228
+  phy_infra_avg |   .0083095   .0035467     2.34   0.019     .0013457    .0152733
+    soc_inc_avg |  -.0013267   .0039459    -0.34   0.737    -.0090742    .0064209
+ env_protec_avg |   .0015129   .0051597     0.29   0.769    -.0086179    .0116436
+    cop_cor_avg |   .0179831   .0047545     3.78   0.000     .0086478    .0273184
+          _cons |   .3558342   .0817672     4.35   0.000     .1952877    .5163808
+---------------------------------------------------------------------------------
+
+. outreg2 using v3_lisa_regression.doc, append dec(3)
+v3_lisa_regression.doc
+dir : seeout
+
+. 
+. regress rel_chgnl  log_baseline_nl gov_magm_avg org_admin_avg budg_magm_avg fiscal_magm_avg service_dev_avg jud_exe_avg phy
+> _infra_avg soc_inc_avg env_protec_avg cop_cor_avg high_school_percent, r
+
+Linear regression                               Number of obs     =        692
+                                                F(12, 679)        =       9.59
+                                                Prob > F          =     0.0000
+                                                R-squared         =     0.1542
+                                                Root MSE          =     .15213
+
+-------------------------------------------------------------------------------------
+                    |               Robust
+          rel_chgnl | Coefficient  std. err.      t    P>|t|     [95% conf. interval]
+--------------------+----------------------------------------------------------------
+    log_baseline_nl |   .0019808   .0085459     0.23   0.817    -.0147987    .0187603
+       gov_magm_avg |  -.0085066   .0081753    -1.04   0.298    -.0245585    .0075453
+      org_admin_avg |  -.0052372    .006502    -0.81   0.421    -.0180037    .0075294
+      budg_magm_avg |   .0025136   .0052016     0.48   0.629    -.0076995    .0127267
+    fiscal_magm_avg |   -.009199   .0056005    -1.64   0.101    -.0201954    .0017975
+    service_dev_avg |   .0048615   .0045295     1.07   0.284     -.004032     .013755
+        jud_exe_avg |  -.0109909   .0060967    -1.80   0.072    -.0229616    .0009798
+      phy_infra_avg |   .0063439   .0034355     1.85   0.065    -.0004015    .0130893
+        soc_inc_avg |  -.0019501   .0037988    -0.51   0.608     -.009409    .0055087
+     env_protec_avg |  -.0054278   .0049627    -1.09   0.274    -.0151718    .0043163
+        cop_cor_avg |   .0150636   .0045209     3.33   0.001     .0061871    .0239402
+high_school_percent |   .0111821   .0013866     8.06   0.000     .0084595    .0139047
+              _cons |   .3315902   .0793955     4.18   0.000        .1757    .4874804
+-------------------------------------------------------------------------------------
+
+. outreg2 using v3_lisa_regression.doc, append dec(3)
+v3_lisa_regression.doc
+dir : seeout
+
+. 
+. regress rel_chgnl  log_baseline_nl gov_magm_avg org_admin_avg budg_magm_avg fiscal_magm_avg service_dev_avg jud_exe_avg phy
+> _infra_avg soc_inc_avg env_protec_avg cop_cor_avg high_school_percent ageatelection, r
+
+Linear regression                               Number of obs     =        692
+                                                F(13, 678)        =       8.85
+                                                Prob > F          =     0.0000
+                                                R-squared         =     0.1542
+                                                Root MSE          =     .15224
+
+-------------------------------------------------------------------------------------
+                    |               Robust
+          rel_chgnl | Coefficient  std. err.      t    P>|t|     [95% conf. interval]
+--------------------+----------------------------------------------------------------
+    log_baseline_nl |   .0019811   .0085522     0.23   0.817     -.014811    .0187731
+       gov_magm_avg |  -.0084892   .0081542    -1.04   0.298    -.0244997    .0075214
+      org_admin_avg |  -.0052428   .0064942    -0.81   0.420     -.017994    .0075085
+      budg_magm_avg |   .0025154   .0052071     0.48   0.629    -.0077086    .0127395
+    fiscal_magm_avg |  -.0092051   .0056146    -1.64   0.102    -.0202292    .0018189
+    service_dev_avg |   .0048635   .0045334     1.07   0.284    -.0040376    .0137647
+        jud_exe_avg |  -.0109845   .0060888    -1.80   0.072    -.0229397    .0009707
+      phy_infra_avg |   .0063523   .0034392     1.85   0.065    -.0004006    .0131051
+        soc_inc_avg |  -.0019545   .0038101    -0.51   0.608    -.0094356    .0055265
+     env_protec_avg |  -.0054461   .0049884    -1.09   0.275    -.0152407    .0043485
+        cop_cor_avg |   .0150786   .0045903     3.28   0.001     .0060657    .0240914
+high_school_percent |   .0111856    .001391     8.04   0.000     .0084545    .0139168
+      ageatelection |  -.0000192   .0006008    -0.03   0.975    -.0011989    .0011605
+              _cons |   .3323794   .0869771     3.82   0.000     .1616025    .5031562
+-------------------------------------------------------------------------------------
+
+. outreg2 using v3_lisa_regression.doc, append dec(3)
+v3_lisa_regression.doc
+dir : seeout
+
+. 
+. regress rel_chgnl  log_baseline_nl gov_magm_avg org_admin_avg budg_magm_avg fiscal_magm_avg service_dev_avg jud_exe_avg phy
+> _infra_avg soc_inc_avg env_protec_avg cop_cor_avg high_school_percent ageatelection female, r
+
+Linear regression                               Number of obs     =        692
+                                                F(14, 677)        =       8.52
+                                                Prob > F          =     0.0000
+                                                R-squared         =     0.1569
+                                                Root MSE          =     .15211
+
+-------------------------------------------------------------------------------------
+                    |               Robust
+          rel_chgnl | Coefficient  std. err.      t    P>|t|     [95% conf. interval]
+--------------------+----------------------------------------------------------------
+    log_baseline_nl |   .0014886   .0084154     0.18   0.860    -.0150348    .0180121
+       gov_magm_avg |  -.0087433    .008183    -1.07   0.286    -.0248104    .0073238
+      org_admin_avg |  -.0052563   .0064973    -0.81   0.419    -.0180136    .0075011
+      budg_magm_avg |   .0030687   .0052535     0.58   0.559    -.0072463    .0133838
+    fiscal_magm_avg |  -.0094906   .0056392    -1.68   0.093     -.020563    .0015819
+    service_dev_avg |   .0049332    .004534     1.09   0.277    -.0039691    .0138355
+        jud_exe_avg |  -.0109879   .0060915    -1.80   0.072    -.0229484    .0009725
+      phy_infra_avg |   .0064461   .0034368     1.88   0.061     -.000302    .0131942
+        soc_inc_avg |  -.0023793    .003797    -0.63   0.531    -.0098346    .0050759
+     env_protec_avg |  -.0052971   .0049523    -1.07   0.285    -.0150208    .0044267
+        cop_cor_avg |   .0150582   .0045648     3.30   0.001     .0060953     .024021
+high_school_percent |   .0111036   .0014021     7.92   0.000     .0083505    .0138567
+      ageatelection |   .0000536    .000606     0.09   0.929    -.0011363    .0012436
+             female |    .061139    .048872     1.25   0.211    -.0348199    .1570978
+              _cons |   .3317549   .0870315     3.81   0.000     .1608708     .502639
+-------------------------------------------------------------------------------------
+
+. outreg2 using v3_lisa_regression.doc, append dec(3)
+v3_lisa_regression.doc
+dir : seeout
+
+. 
+. regress rel_chgnl  log_baseline_nl gov_magm_avg org_admin_avg budg_magm_avg fiscal_magm_avg service_dev_avg jud_exe_avg phy
+> _infra_avg soc_inc_avg env_protec_avg cop_cor_avg high_school_percent ageatelection female gov_coalitiion, r
+
+Linear regression                               Number of obs     =        692
+                                                F(15, 676)        =       8.05
+                                                Prob > F          =     0.0000
+                                                R-squared         =     0.1598
+                                                Root MSE          =     .15196
+
+-------------------------------------------------------------------------------------
+                    |               Robust
+          rel_chgnl | Coefficient  std. err.      t    P>|t|     [95% conf. interval]
+--------------------+----------------------------------------------------------------
+    log_baseline_nl |   .0005805   .0085282     0.07   0.946    -.0161645    .0173255
+       gov_magm_avg |  -.0083563   .0081152    -1.03   0.304    -.0242903    .0075777
+      org_admin_avg |  -.0052816    .006487    -0.81   0.416    -.0180187    .0074555
+      budg_magm_avg |   .0034575   .0052521     0.66   0.511    -.0068549    .0137699
+    fiscal_magm_avg |  -.0092278   .0056081    -1.65   0.100    -.0202392    .0017836
+    service_dev_avg |   .0042002     .00446     0.94   0.347    -.0045569    .0129572
+        jud_exe_avg |  -.0103495   .0059477    -1.74   0.082    -.0220278    .0013288
+      phy_infra_avg |   .0069001   .0034352     2.01   0.045     .0001552     .013645
+        soc_inc_avg |  -.0021834   .0038018    -0.57   0.566    -.0096482    .0052813
+     env_protec_avg |  -.0056036   .0049682    -1.13   0.260    -.0153585    .0041514
+        cop_cor_avg |   .0149579    .004569     3.27   0.001     .0059868    .0239291
+high_school_percent |   .0112693   .0014111     7.99   0.000     .0084987    .0140399
+      ageatelection |  -.0000843   .0006173    -0.14   0.891    -.0012964    .0011277
+             female |    .061375   .0504431     1.22   0.224    -.0376691     .160419
+     gov_coalitiion |  -.0185218   .0117623    -1.57   0.116    -.0416168    .0045732
+              _cons |   .3469365   .0895057     3.88   0.000     .1711938    .5226792
+-------------------------------------------------------------------------------------
+
+. outreg2 using v3_lisa_regression.doc, append dec(3)
+v3_lisa_regression.doc
+dir : seeout
+
+. 
+. regress rel_chgnl  log_baseline_nl gov_magm_avg org_admin_avg budg_magm_avg fiscal_magm_avg service_dev_avg jud_exe_avg phy
+> _infra_avg soc_inc_avg env_protec_avg cop_cor_avg high_school_percent ageatelection female gov_coalitiion , r
+
+Linear regression                               Number of obs     =        692
+                                                F(15, 676)        =       8.05
+                                                Prob > F          =     0.0000
+                                                R-squared         =     0.1598
+                                                Root MSE          =     .15196
+
+-------------------------------------------------------------------------------------
+                    |               Robust
+          rel_chgnl | Coefficient  std. err.      t    P>|t|     [95% conf. interval]
+--------------------+----------------------------------------------------------------
+    log_baseline_nl |   .0005805   .0085282     0.07   0.946    -.0161645    .0173255
+       gov_magm_avg |  -.0083563   .0081152    -1.03   0.304    -.0242903    .0075777
+      org_admin_avg |  -.0052816    .006487    -0.81   0.416    -.0180187    .0074555
+      budg_magm_avg |   .0034575   .0052521     0.66   0.511    -.0068549    .0137699
+    fiscal_magm_avg |  -.0092278   .0056081    -1.65   0.100    -.0202392    .0017836
+    service_dev_avg |   .0042002     .00446     0.94   0.347    -.0045569    .0129572
+        jud_exe_avg |  -.0103495   .0059477    -1.74   0.082    -.0220278    .0013288
+      phy_infra_avg |   .0069001   .0034352     2.01   0.045     .0001552     .013645
+        soc_inc_avg |  -.0021834   .0038018    -0.57   0.566    -.0096482    .0052813
+     env_protec_avg |  -.0056036   .0049682    -1.13   0.260    -.0153585    .0041514
+        cop_cor_avg |   .0149579    .004569     3.27   0.001     .0059868    .0239291
+high_school_percent |   .0112693   .0014111     7.99   0.000     .0084987    .0140399
+      ageatelection |  -.0000843   .0006173    -0.14   0.891    -.0012964    .0011277
+             female |    .061375   .0504431     1.22   0.224    -.0376691     .160419
+     gov_coalitiion |  -.0185218   .0117623    -1.57   0.116    -.0416168    .0045732
+              _cons |   .3469365   .0895057     3.88   0.000     .1711938    .5226792
+-------------------------------------------------------------------------------------
+
+. outreg2 using v3_lisa_regression.doc, append dec(3)
+v3_lisa_regression.doc
+dir : seeout
+
+. 
+. regress rel_chgnl log_baseline_nl gov_magm_avg org_admin_avg budg_magm_avg fiscal_magm_avg service_dev_avg jud_exe_avg phy_
+> infra_avg soc_inc_avg env_protec_avg cop_cor_avg high_school_percent ageatelection female gov_coalitiion ln_popn, r
+
+Linear regression                               Number of obs     =        692
+                                                F(16, 675)        =      11.40
+                                                Prob > F          =     0.0000
+                                                R-squared         =     0.2128
+                                                Root MSE          =      .1472
+
+-------------------------------------------------------------------------------------
+                    |               Robust
+          rel_chgnl | Coefficient  std. err.      t    P>|t|     [95% conf. interval]
+--------------------+----------------------------------------------------------------
+    log_baseline_nl |  -.0111537   .0080568    -1.38   0.167    -.0269731    .0046658
+       gov_magm_avg |  -.0063767   .0077888    -0.82   0.413      -.02167    .0089165
+      org_admin_avg |  -.0012051   .0063332    -0.19   0.849    -.0136401      .01123
+      budg_magm_avg |   .0015237   .0050348     0.30   0.762     -.008362    .0114094
+    fiscal_magm_avg |  -.0055101   .0054107    -1.02   0.309     -.016134    .0051139
+    service_dev_avg |   .0039042   .0043529     0.90   0.370    -.0046426     .012451
+        jud_exe_avg |  -.0096086   .0058251    -1.65   0.100     -.021046    .0018288
+      phy_infra_avg |   .0034259   .0033513     1.02   0.307    -.0031544    .0100062
+        soc_inc_avg |   -.000398   .0036595    -0.11   0.913    -.0075833    .0067873
+     env_protec_avg |  -.0103492   .0048338    -2.14   0.033    -.0198403    -.000858
+        cop_cor_avg |   .0147033   .0043824     3.36   0.001     .0060985    .0233082
+high_school_percent |   .0091166   .0012912     7.06   0.000     .0065814    .0116517
+      ageatelection |  -.0004678     .00061    -0.77   0.443    -.0016655      .00073
+             female |   .0621903   .0514834     1.21   0.227    -.0388967    .1632772
+     gov_coalitiion |  -.0174621   .0113645    -1.54   0.125    -.0397761    .0048519
+            ln_popn |   .0552896   .0075778     7.30   0.000     .0404108    .0701684
+              _cons |  -.1409509   .0945094    -1.49   0.136    -.3265188    .0446169
+-------------------------------------------------------------------------------------
+
+. 
+. regress rel_chgnl log_baseline_nl gov_magm_avg org_admin_avg budg_magm_avg fiscal_magm_avg service_dev_avg jud_exe_avg phy_
+> infra_avg soc_inc_avg env_protec_avg cop_cor_avg high_school_percent ageatelection female gov_coalitiion ln_popn, r
+
+Linear regression                               Number of obs     =        692
+                                                F(16, 675)        =      11.40
+                                                Prob > F          =     0.0000
+                                                R-squared         =     0.2128
+                                                Root MSE          =      .1472
+
+-------------------------------------------------------------------------------------
+                    |               Robust
+          rel_chgnl | Coefficient  std. err.      t    P>|t|     [95% conf. interval]
+--------------------+----------------------------------------------------------------
+    log_baseline_nl |  -.0111537   .0080568    -1.38   0.167    -.0269731    .0046658
+       gov_magm_avg |  -.0063767   .0077888    -0.82   0.413      -.02167    .0089165
+      org_admin_avg |  -.0012051   .0063332    -0.19   0.849    -.0136401      .01123
+      budg_magm_avg |   .0015237   .0050348     0.30   0.762     -.008362    .0114094
+    fiscal_magm_avg |  -.0055101   .0054107    -1.02   0.309     -.016134    .0051139
+    service_dev_avg |   .0039042   .0043529     0.90   0.370    -.0046426     .012451
+        jud_exe_avg |  -.0096086   .0058251    -1.65   0.100     -.021046    .0018288
+      phy_infra_avg |   .0034259   .0033513     1.02   0.307    -.0031544    .0100062
+        soc_inc_avg |   -.000398   .0036595    -0.11   0.913    -.0075833    .0067873
+     env_protec_avg |  -.0103492   .0048338    -2.14   0.033    -.0198403    -.000858
+        cop_cor_avg |   .0147033   .0043824     3.36   0.001     .0060985    .0233082
+high_school_percent |   .0091166   .0012912     7.06   0.000     .0065814    .0116517
+      ageatelection |  -.0004678     .00061    -0.77   0.443    -.0016655      .00073
+             female |   .0621903   .0514834     1.21   0.227    -.0388967    .1632772
+     gov_coalitiion |  -.0174621   .0113645    -1.54   0.125    -.0397761    .0048519
+            ln_popn |   .0552896   .0075778     7.30   0.000     .0404108    .0701684
+              _cons |  -.1409509   .0945094    -1.49   0.136    -.3265188    .0446169
+-------------------------------------------------------------------------------------
+
+. outreg2 using v3_lisa_regression.doc, append dec(3)
+v3_lisa_regression.doc
+dir : seeout
+
+. 
+. regress rel_chgnl log_baseline_nl gov_magm_avg org_admin_avg budg_magm_avg fiscal_magm_avg service_dev_avg jud_exe_avg phy_
+> infra_avg soc_inc_avg env_protec_avg cop_cor_avg high_school_percent ageatelection female gov_coalitiion ln_popn urban_num,
+>  r
+
+Linear regression                               Number of obs     =        692
+                                                F(17, 674)        =      10.57
+                                                Prob > F          =     0.0000
+                                                R-squared         =     0.2166
+                                                Root MSE          =     .14695
+
+-------------------------------------------------------------------------------------
+                    |               Robust
+          rel_chgnl | Coefficient  std. err.      t    P>|t|     [95% conf. interval]
+--------------------+----------------------------------------------------------------
+    log_baseline_nl |  -.0098708   .0081155    -1.22   0.224    -.0258055    .0060639
+       gov_magm_avg |  -.0066231   .0077876    -0.85   0.395    -.0219139    .0086678
+      org_admin_avg |    -.00155    .006243    -0.25   0.804     -.013808    .0107081
+      budg_magm_avg |   .0012445   .0050693     0.25   0.806    -.0087091     .011198
+    fiscal_magm_avg |  -.0062423   .0053875    -1.16   0.247    -.0168205    .0043359
+    service_dev_avg |   .0044682    .004364     1.02   0.306    -.0041005    .0130368
+        jud_exe_avg |  -.0104608   .0058531    -1.79   0.074    -.0219533    .0010318
+      phy_infra_avg |   .0039584   .0033526     1.18   0.238    -.0026244    .0105412
+        soc_inc_avg |   -.000278   .0036569    -0.08   0.939    -.0074583    .0069022
+     env_protec_avg |  -.0098925   .0047897    -2.07   0.039     -.019297    -.000488
+        cop_cor_avg |   .0146987   .0043952     3.34   0.001     .0060688    .0233285
+high_school_percent |   .0095978   .0013576     7.07   0.000     .0069323    .0122634
+      ageatelection |  -.0005121   .0006119    -0.84   0.403    -.0017136    .0006893
+             female |   .0600758   .0512254     1.17   0.241    -.0405047    .1606564
+     gov_coalitiion |  -.0184144   .0113846    -1.62   0.106    -.0407679    .0039391
+            ln_popn |   .0641635   .0097985     6.55   0.000     .0449244    .0834027
+          urban_num |  -.0276337   .0167445    -1.65   0.099    -.0605113     .005244
+              _cons |  -.2253286   .1144144    -1.97   0.049    -.4499802   -.0006771
+-------------------------------------------------------------------------------------
+
+. outreg2 using v3_lisa_regression.doc, append dec(3)
+v3_lisa_regression.doc
+dir : seeout
+
+. 
+end of do-file
+
+. do "/var/folders/77/r2kbz41j5hz_44s8bp00q04m0000gn/T//SD36569.000000"
+
 . // revised regression
 . 
-. regress rel_chgnl phy_infra_avg, r
+. gen other_lisa = (gov_magm_avg + org_admin_avg + budg_magm_avg + fiscal_magm_avg + service_dev_avg + jud_exe_avg + phy_infr
+> a_avg + soc_inc_avg)
+
+. 
+. regress rel_chgnl log_baseline_nl, r
 
 Linear regression                               Number of obs     =        692
-                                                F(1, 690)         =      10.62
-                                                Prob > F          =     0.0012
-                                                R-squared         =     0.0196
-                                                Root MSE          =     .16247
+                                                F(1, 690)         =       2.27
+                                                Prob > F          =     0.1321
+                                                R-squared         =     0.0034
+                                                Root MSE          =     .16381
 
--------------------------------------------------------------------------------
-              |               Robust
-    rel_chgnl | Coefficient  std. err.      t    P>|t|     [95% conf. interval]
---------------+----------------------------------------------------------------
-phy_infra_avg |   .0096567   .0029633     3.26   0.001     .0038385    .0154749
-        _cons |   .2796695   .0192784    14.51   0.000     .2418181    .3175208
--------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+                |               Robust
+      rel_chgnl | Coefficient  std. err.      t    P>|t|     [95% conf. interval]
+----------------+----------------------------------------------------------------
+log_baseline_nl |   .0141983   .0094171     1.51   0.132    -.0042914     .032688
+          _cons |   .2648583   .0489847     5.41   0.000     .1686814    .3610353
+---------------------------------------------------------------------------------
 
-. outreg2 using v4_revised_regression.doc, replace dec(3)
-v4_revised_regression.doc
+. outreg2 using v3_revised_regression.doc, replace dec(3)
+v3_revised_regression.doc
 dir : seeout
 
 . 
-. regress rel_chgnl phy_infra_avg cop_cor_avg, r
+. regress rel_chgnl log_baseline_nl env_protec_avg cop_cor_avg other_lisa, r
 
 Linear regression                               Number of obs     =        692
-                                                F(2, 689)         =      10.27
-                                                Prob > F          =     0.0000
-                                                R-squared         =     0.0333
-                                                Root MSE          =     .16145
+                                                F(4, 687)         =       6.03
+                                                Prob > F          =     0.0001
+                                                R-squared         =     0.0332
+                                                Root MSE          =     .16169
 
--------------------------------------------------------------------------------
-              |               Robust
-    rel_chgnl | Coefficient  std. err.      t    P>|t|     [95% conf. interval]
---------------+----------------------------------------------------------------
-phy_infra_avg |    .004616   .0032925     1.40   0.161    -.0018486    .0110806
-  cop_cor_avg |   .0141925   .0044112     3.22   0.001     .0055314    .0228536
-        _cons |   .2799535   .0192308    14.56   0.000     .2421956    .3177115
--------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+                |               Robust
+      rel_chgnl | Coefficient  std. err.      t    P>|t|     [95% conf. interval]
+----------------+----------------------------------------------------------------
+log_baseline_nl |   .0081265   .0093313     0.87   0.384    -.0101947    .0264478
+ env_protec_avg |   .0041768   .0050826     0.82   0.411    -.0058024    .0141561
+    cop_cor_avg |   .0189548   .0047536     3.99   0.000     .0096215    .0282881
+     other_lisa |   -.000987    .001002    -0.99   0.325    -.0029544    .0009804
+          _cons |   .2938174   .0702525     4.18   0.000      .155882    .4317528
+---------------------------------------------------------------------------------
 
-. outreg2 using v4_revised_regression.doc, append dec(3)
-v4_revised_regression.doc
+. outreg2 using v3_revised_regression.doc, append dec(3)
+v3_revised_regression.doc
 dir : seeout
 
 . 
-. regress rel_chgnl phy_infra_avg cop_cor_avg high_school_percent, r
+. regress rel_chgnl log_baseline_nl env_protec_avg cop_cor_avg other_lisa high_school_percent ageatelection, r
 
 Linear regression                               Number of obs     =        692
-                                                F(3, 688)         =      14.57
+                                                F(6, 685)         =      14.64
                                                 Prob > F          =     0.0000
-                                                R-squared         =     0.0932
-                                                Root MSE          =     .15648
+                                                R-squared         =     0.1384
+                                                Root MSE          =     .15287
 
 -------------------------------------------------------------------------------------
                     |               Robust
           rel_chgnl | Coefficient  std. err.      t    P>|t|     [95% conf. interval]
 --------------------+----------------------------------------------------------------
-      phy_infra_avg |   .0008771   .0032671     0.27   0.788    -.0055376    .0072919
-        cop_cor_avg |   .0101191   .0042467     2.38   0.017     .0017811    .0184571
-high_school_percent |    .013882   .0025122     5.53   0.000     .0089495    .0188146
-              _cons |   .2093196   .0239618     8.74   0.000     .1622726    .2563666
+    log_baseline_nl |   .0025675   .0087672     0.29   0.770    -.0146464    .0197814
+     env_protec_avg |  -.0030644   .0048265    -0.63   0.526    -.0125409     .006412
+        cop_cor_avg |   .0154838   .0045338     3.42   0.001      .006582    .0243855
+         other_lisa |  -.0014366   .0009695    -1.48   0.139    -.0033401     .000467
+high_school_percent |   .0111968   .0013578     8.25   0.000     .0085309    .0138628
+      ageatelection |   .0000404   .0006039     0.07   0.947    -.0011453     .001226
+              _cons |   .2689886   .0761584     3.53   0.000     .1194566    .4185205
 -------------------------------------------------------------------------------------
 
-. outreg2 using v4_revised_regression.doc, append dec(3)
-v4_revised_regression.doc
+. outreg2 using v3_revised_regression.doc, append dec(3)
+v3_revised_regression.doc
 dir : seeout
 
 . 
-. regress rel_chgnl phy_infra_avg cop_cor_avg high_school_percent ageatelection, r
+. regress rel_chgnl log_baseline_nl env_protec_avg cop_cor_avg other_lisa high_school_percent ageatelection female, r
 
 Linear regression                               Number of obs     =        692
-                                                F(4, 687)         =      10.93
+                                                F(7, 684)         =      13.14
                                                 Prob > F          =     0.0000
-                                                R-squared         =     0.0933
-                                                Root MSE          =     .15658
+                                                R-squared         =     0.1405
+                                                Root MSE          =     .15279
 
 -------------------------------------------------------------------------------------
                     |               Robust
           rel_chgnl | Coefficient  std. err.      t    P>|t|     [95% conf. interval]
 --------------------+----------------------------------------------------------------
-      phy_infra_avg |   .0008334   .0032583     0.26   0.798    -.0055639    .0072307
-        cop_cor_avg |   .0100073   .0042924     2.33   0.020     .0015794    .0184351
-high_school_percent |   .0138272   .0025057     5.52   0.000     .0089075    .0187469
-      ageatelection |   .0002134    .000604     0.35   0.724    -.0009726    .0013993
-              _cons |   .1998799   .0381863     5.23   0.000      .124904    .2748557
+    log_baseline_nl |   .0021573   .0086642     0.25   0.803    -.0148543    .0191689
+     env_protec_avg |  -.0029561   .0047948    -0.62   0.538    -.0123703    .0064582
+        cop_cor_avg |   .0154341   .0045157     3.42   0.001     .0065679    .0243004
+         other_lisa |   -.001454   .0009663    -1.50   0.133    -.0033511    .0004432
+high_school_percent |    .011126   .0013695     8.12   0.000     .0084372    .0138149
+      ageatelection |   .0001092   .0006087     0.18   0.858     -.001086    .0013044
+             female |   .0544651   .0485924     1.12   0.263     -.040943    .1498733
+              _cons |   .2680205   .0761771     3.52   0.000     .1184515    .4175896
 -------------------------------------------------------------------------------------
 
-. outreg2 using v4_revised_regression.doc, append dec(3)
-v4_revised_regression.doc
+. outreg2 using v3_revised_regression.doc, append dec(3)
+v3_revised_regression.doc
 dir : seeout
 
 . 
-. regress rel_chgnl phy_infra_avg cop_cor_avg high_school_percent ageatelection female, r
+. regress rel_chgnl log_baseline_nl env_protec_avg cop_cor_avg other_lisa high_school_percent ageatelection female gov_coalit
+> iion, r
 
 Linear regression                               Number of obs     =        692
-                                                F(5, 686)         =       9.50
+                                                F(8, 683)         =      12.04
                                                 Prob > F          =     0.0000
-                                                R-squared         =     0.0954
-                                                Root MSE          =     .15652
+                                                R-squared         =     0.1438
+                                                Root MSE          =     .15261
 
 -------------------------------------------------------------------------------------
                     |               Robust
           rel_chgnl | Coefficient  std. err.      t    P>|t|     [95% conf. interval]
 --------------------+----------------------------------------------------------------
-      phy_infra_avg |   .0008937   .0032598     0.27   0.784    -.0055067    .0072942
-        cop_cor_avg |   .0099112   .0042844     2.31   0.021      .001499    .0183233
-high_school_percent |   .0136537    .002526     5.41   0.000     .0086942    .0186133
-      ageatelection |   .0002789   .0006095     0.46   0.647    -.0009179    .0014757
-             female |   .0525288   .0464966     1.13   0.259     -.038764    .1438216
-              _cons |   .1967514   .0382883     5.14   0.000      .121575    .2719278
+    log_baseline_nl |   .0014834   .0087751     0.17   0.866     -.015746    .0187128
+     env_protec_avg |  -.0032288   .0048027    -0.67   0.502    -.0126587    .0062011
+        cop_cor_avg |   .0154012   .0045302     3.40   0.001     .0065064     .024296
+         other_lisa |  -.0013425   .0009534    -1.41   0.160    -.0032144    .0005295
+high_school_percent |   .0113205   .0013783     8.21   0.000     .0086144    .0140266
+      ageatelection |  -.0000266   .0006237    -0.04   0.966    -.0012511    .0011979
+             female |   .0545578   .0499548     1.09   0.275    -.0435256    .1526413
+     gov_coalitiion |  -.0192453   .0122834    -1.57   0.118    -.0433632    .0048725
+              _cons |   .2823844   .0789989     3.57   0.000     .1272746    .4374942
 -------------------------------------------------------------------------------------
 
-. outreg2 using v4_revised_regression.doc, append dec(3)
-v4_revised_regression.doc
+. outreg2 using v3_revised_regression.doc, append dec(3)
+v3_revised_regression.doc
 dir : seeout
 
 . 
-. regress rel_chgnl phy_infra_avg cop_cor_avg high_school_percent ageatelection female, r
+. regress rel_chgnl log_baseline_nl env_protec_avg cop_cor_avg other_lisa high_school_percent ageatelection female gov_coalit
+> iion ln_popn, r
 
 Linear regression                               Number of obs     =        692
-                                                F(5, 686)         =       9.50
+                                                F(9, 682)         =      19.32
                                                 Prob > F          =     0.0000
-                                                R-squared         =     0.0954
-                                                Root MSE          =     .15652
+                                                R-squared         =     0.2050
+                                                Root MSE          =     .14716
 
 -------------------------------------------------------------------------------------
                     |               Robust
           rel_chgnl | Coefficient  std. err.      t    P>|t|     [95% conf. interval]
 --------------------+----------------------------------------------------------------
-      phy_infra_avg |   .0008937   .0032598     0.27   0.784    -.0055067    .0072942
-        cop_cor_avg |   .0099112   .0042844     2.31   0.021      .001499    .0183233
-high_school_percent |   .0136537    .002526     5.41   0.000     .0086942    .0186133
-      ageatelection |   .0002789   .0006095     0.46   0.647    -.0009179    .0014757
-             female |   .0525288   .0464966     1.13   0.259     -.038764    .1438216
-              _cons |   .1967514   .0382883     5.14   0.000      .121575    .2719278
+    log_baseline_nl |  -.0120879   .0082898    -1.46   0.145    -.0283645    .0041887
+     env_protec_avg |  -.0090145   .0046227    -1.95   0.052     -.018091     .000062
+        cop_cor_avg |   .0148131   .0043172     3.43   0.001     .0063366    .0232897
+         other_lisa |  -.0007063   .0009146    -0.77   0.440     -.002502    .0010894
+high_school_percent |    .008879   .0012639     7.03   0.000     .0063975    .0113605
+      ageatelection |  -.0005108   .0006138    -0.83   0.406    -.0017159    .0006943
+             female |   .0593181   .0516814     1.15   0.251    -.0421557    .1607919
+     gov_coalitiion |  -.0191241   .0117798    -1.62   0.105    -.0422531     .004005
+            ln_popn |   .0579009    .007568     7.65   0.000     .0430414    .0727603
+              _cons |  -.2022493   .0835161    -2.42   0.016    -.3662288   -.0382698
 -------------------------------------------------------------------------------------
 
-. outreg2 using v4_revised_regression.doc, append dec(3)
-v4_revised_regression.doc
+. outreg2 using v3_revised_regression.doc, append dec(3)
+v3_revised_regression.doc
 dir : seeout
 
 . 
-. regress rel_chgnl phy_infra_avg cop_cor_avg high_school_percent ageatelection female gov_coalitiion, r
+. regress rel_chgnl log_baseline_nl env_protec_avg cop_cor_avg other_lisa high_school_percent ageatelection female gov_coalit
+> iion ln_popn urban_num, r
 
 Linear regression                               Number of obs     =        692
-                                                F(6, 685)         =       9.26
+                                                F(10, 681)        =      17.09
                                                 Prob > F          =     0.0000
-                                                R-squared         =     0.0997
-                                                Root MSE          =     .15626
+                                                R-squared         =     0.2073
+                                                Root MSE          =     .14706
 
 -------------------------------------------------------------------------------------
                     |               Robust
           rel_chgnl | Coefficient  std. err.      t    P>|t|     [95% conf. interval]
 --------------------+----------------------------------------------------------------
-      phy_infra_avg |   .0013837   .0032305     0.43   0.669    -.0049592    .0077265
-        cop_cor_avg |   .0097427   .0042908     2.27   0.023      .001318    .0181674
-high_school_percent |   .0141113   .0025325     5.57   0.000      .009139    .0190837
-      ageatelection |   .0001183   .0006224     0.19   0.849    -.0011038    .0013404
-             female |   .0523973   .0481055     1.09   0.276    -.0420546    .1468491
-     gov_coalitiion |  -.0224451   .0124408    -1.80   0.072    -.0468718    .0019816
-              _cons |   .2117722   .0406064     5.22   0.000     .1320442    .2915002
+    log_baseline_nl |  -.0111619   .0083543    -1.34   0.182    -.0275652    .0052415
+     env_protec_avg |  -.0085251   .0045976    -1.85   0.064    -.0175523     .000502
+        cop_cor_avg |   .0148539   .0043263     3.43   0.001     .0063593    .0233485
+         other_lisa |  -.0007463   .0009135    -0.82   0.414    -.0025399    .0010472
+high_school_percent |   .0092411   .0013156     7.02   0.000     .0066579    .0118242
+      ageatelection |  -.0005445   .0006152    -0.89   0.376    -.0017525    .0006634
+             female |   .0576734   .0514299     1.12   0.263    -.0433069    .1586536
+     gov_coalitiion |  -.0199903   .0118007    -1.69   0.091    -.0431604    .0031799
+            ln_popn |   .0649552   .0096202     6.75   0.000     .0460663    .0838441
+          urban_num |   -.021191   .0166046    -1.28   0.202    -.0537933    .0114113
+              _cons |  -.2722404   .1067253    -2.55   0.011    -.4817905   -.0626903
 -------------------------------------------------------------------------------------
 
-. outreg2 using v4_revised_regression.doc, append dec(3)
-v4_revised_regression.doc
+. outreg2 using v3_revised_regression.doc, append dec(3)
+v3_revised_regression.doc
 dir : seeout
 
-. 
-. regress rel_chgnl phy_infra_avg cop_cor_avg high_school_percent ageatelection female gov_coalitiion ln_popn, r
-
-Linear regression                               Number of obs     =        692
-                                                F(7, 684)         =      20.69
-                                                Prob > F          =     0.0000
-                                                R-squared         =     0.1796
-                                                Root MSE          =     .14928
-
--------------------------------------------------------------------------------------
-                    |               Robust
-          rel_chgnl | Coefficient  std. err.      t    P>|t|     [95% conf. interval]
---------------------+----------------------------------------------------------------
-      phy_infra_avg |  -.0025734   .0031631    -0.81   0.416     -.008784    .0036372
-        cop_cor_avg |   .0095814    .004091     2.34   0.019      .001549    .0176139
-high_school_percent |   .0115359   .0021702     5.32   0.000     .0072749    .0157969
-      ageatelection |  -.0003271   .0006089    -0.54   0.591    -.0015227    .0008685
-             female |   .0540479   .0501637     1.08   0.282    -.0444453    .1525412
-     gov_coalitiion |  -.0197596   .0117527    -1.68   0.093    -.0428352    .0033161
-            ln_popn |   .0622762   .0073735     8.45   0.000     .0477987    .0767536
-              _cons |  -.3621136    .071367    -5.07   0.000    -.5022382   -.2219889
--------------------------------------------------------------------------------------
-
-. outreg2 using v4_revised_regression.doc, append dec(3)
-v4_revised_regression.doc
-dir : seeout
-
-. 
-. 
-. 
-. 
-. //
-. // regress rel_chgnl lisa_avg log_baseline_nl ln_educ ln_popn, r
-. //
-. // regress rel_chgnl lisa_avg log_baseline_nl high_school_percent, r
-. //
-. // regress rel_chgnl_2 lisa_avg, r
-. // eststo model1
-. //
-. // regress rel_chgnl_2 lisa_avg log_baseline_nl ln_educ, r
-. // eststo model2
-. //
-. // regress rel_chgnl_2 lisa_avg log_baseline_nl ln_educ ln_popn, r
-. //
-. // regress rel_chgnl_2 lisa_avg log_baseline_nl high_school_percent, r
-. //
-. //
-. // regress rel_chgnl lisa_avg log_baseline_nl ln_popn ln_area ln_educ, r
-. //
-. // regress rel_chgnl lisa_avg log_baseline_nl ln_popn ln_area , r
-. // eststo model3
-. //
-. //
-. // regress rel_chgnl lisa_avg log_baseline_nl ln_popn high_school_percent , r
-. // eststo model4
-. //
-. // regress rel_chgnl lisa_avg log_baseline_nl ln_popn high_school_percent urban_num, r
-. // eststo model5
-. //
-. // regress rel_chgnl lisa_avg log_baseline_nl ln_popn high_school_percent urban_num ageatelection, r
-. // eststo model6
-. //
-. // regress rel_chgnl lisa_avg log_baseline_nl ln_popn high_school_percent urban_num ageatelection female, r
-. // eststo model7
-. //
-. // regress rel_chgnl lisa_avg log_baseline_nl ln_popn high_school_percent urban_num ageatelection female gov_coalitiion, r
-. // eststo model8
-. //
-. // esttab model1 model2 model3 model4 model5 model6 model7 model8 using regression_table.txt, replace ///
-. // b(3) se(3) t(3) star(* 0.10 ** 0.05 *** 0.01) ///
-. // title("Regression Results") ///
-. // keep(lisa_avg log_baseline_nl ln_popn urban_num gov_coalitiion ageatelection female high_school_percent _cons) ///
-. // order(lisa_avg log_baseline_nl ln_popn high_school_percent urban_num gov_coalitiion ageatelection female  _cons) ///
-. // stats(N r2, labels(Observations "R-squared")) ///
-. //
-. // // use vif here to check multicollinearity
-. //
-. // // //graphs
-. //
-. // graph bar (mean) sum_2021 (mean) sum_2017 (mean) sum_2016 (mean) sum_2015 (mean) sum_2014 (mean) sum_2013 (mean) sum_201
-> 2
-. //
-. //
-. // graph box rel_chgnl, over(province)
-. //
-. // summarize rel_chgnl
-. //
-. // graph box lisa_avg, over(province)
-. //
-. // twoway (scatter rel_chgnl lisa_avg) (lfit rel_chgnl lisa_avg)
-. //
-. // graph box high_school_percent, over(province)
-. //
-. // twoway (scatter rel_chgnl high_school_percent) (lfit rel_chgnl high_school_percent)
-. //
-. // graph box rel_chgnl, over(female)
-. //
-. // graph box ageatelection, over(province)
-. //
-. // twoway (scatter rel_chgnl ageatelection) (lfit rel_chgnl ageatelection) 
-. //
-. // scatter rel_chgnl ageatelection if gov_coalitiion == 0, mcolor(red) || scatter rel_chgnl ageatelection if gov_coalitiion
->  == 1, mcolor(green)
-. 
-. 
-. 
-. 
-. 
-. 
 . 
 end of do-file
 

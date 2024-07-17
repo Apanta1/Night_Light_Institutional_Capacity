@@ -161,6 +161,8 @@ outreg2 using v3_revised_regression.doc, append dec(3)
 regress rel_chgnl log_baseline_nl env_protec_avg cop_cor_avg other_lisa high_school_percent ageatelection female gov_coalitiion ln_popn urban_num, r
 outreg2 using v3_revised_regression.doc, append dec(3)
 
+
+
 // use vif here to check multicollinearity
 //
 graphs
