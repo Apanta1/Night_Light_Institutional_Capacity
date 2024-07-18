@@ -26,7 +26,7 @@ destring lisa_21_22, replace
 
 egen baseline_nl = rowmean(sum_2014 sum_2015 sum_2016 sum_2017)
 
-gen log_baseline_nl = log(baseline_nl)
+gen baseline_nl_km = (baseline_nl/area_kmsq)
 
 generate rel_chgnl  = (log(sum_2021) - log(sum_2017))
 
@@ -72,7 +72,7 @@ egen env_protec_avg = rowmean(env_protec_20_21 env_protec_21_22)
 egen cop_cor_avg = rowmean(cop_cor_20_21 cop_cor_21_22)
 
 
-summarize lisa_avg if unit_name == "Budhanilakantha"
+summarize lisa_avg if unit_name == "Mohanyal"
 
 scalar ben_mark_lisa = r(mean)
 
@@ -102,6 +102,14 @@ outreg2 using v4_intial_regression.doc, append dec(3)
 
 regress rel_chgnl  log_baseline_nl rel_lisa high_school_percent ageatelection gov_coalitiion female ln_popn, r
 outreg2 using v4_intial_regression.doc, append dec(3)
+
+regress rel_chgnl  log_baseline_nl rel_lisa high_school_percent ageatelection gov_coalitiion female ln_popn urban_num, r
+outreg2 using v4_intial_regression.doc, append dec(3)
+
+twoway (scatter rel_chgnl  rel_lisa) (lfit rel_chgnl  rel_lisa)
+
+twoway (scatter rel_chgnl  lisa_avg) (lfit rel_chgnl  lisa_avg)
+
 
 // lisa average calculations
 
