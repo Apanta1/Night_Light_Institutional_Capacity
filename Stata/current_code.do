@@ -174,6 +174,14 @@ outreg2 using v3_revised_regression.doc, append dec(3)
 regress rel_chgnl ln_baseline_nl_km env_protec_avg cop_cor_avg other_lisa high_school_percent ageatelection female gov_coalitiion ln_popn urban_num, r
 outreg2 using v3_revised_regression.doc, append dec(3)
 
+// calculating IV
+
+regress rel_chgnl ln_baseline_nl_km gov_magm_avg org_admin_avg budg_magm_avg fiscal_magm_avg service_dev_avg jud_exe_avg phy_infra_avg soc_inc_avg env_protec_avg high_school_percent ageatelection female gov_coalitiion ln_popn urban_num, r
+
+regress cop_cor_avg ln_baseline_nl_km gov_magm_avg org_admin_avg budg_magm_avg fiscal_magm_avg service_dev_avg jud_exe_avg phy_infra_avg soc_inc_avg env_protec_avg high_school_percent ageatelection female gov_coalitiion ln_popn urban_num, r
+
+regress cop_cor_avg gov_coalitiion
+outreg2 using v3_lisa_regression.doc, append dec(3)
 
 // use vif here to check multicollinearity
 //
