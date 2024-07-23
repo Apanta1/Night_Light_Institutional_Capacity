@@ -8,7 +8,7 @@ log close
 log using MainDataSet.log, replace
 
 // Load data
-import delimited "/Users/apanta1/Desktop/Summer Research 2024/Night_Light_Institutional_Capacity/Stata/Local_Gov_Dataset_of_Nepal.csv", clear
+import delimited "/Users/apanta1/Desktop/Summer Research 2024/Night_Light_Institutional_Capacity/Stata/Cop_break.csv", clear
 
 // removing empty rows
 drop if missing(unit_name)
@@ -44,6 +44,34 @@ gen female = 0
 replace female = 1 if sex =="Female"
 
 egen lisa_avg = rowmean(lisa_20_21 lisa_21_22)
+
+
+// lisa average calculations
+
+
+egen gov_magm_avg = rowmean(gov_magm_20_21 gov_magm_21_22)
+egen org_admin_avg = rowmean(org_admin_20_21 org_admin_21_22)
+egen budg_magm_avg = rowmean(budg_magm_20_21 budg_magm_21_22)
+egen fiscal_magm_avg = rowmean(fiscal_magm_20_21 fiscal_magm_21_22)
+egen service_dev_avg = rowmean(service_dev_20_21 service_dev_21_22)
+egen jud_exe_avg = rowmean(jud_exe_20_21 jud_exe_21_22)
+egen phy_infra_avg = rowmean(phy_infra_20_21 phy_infra_21_22)
+egen soc_inc_avg = rowmean(soc_inc_20_21 soc_inc_21_22)
+egen env_protec_avg = rowmean(env_protec_20_21 env_protec_21_22)
+egen cop_cor_avg = rowmean(cop_cor_20_21 cop_cor_21_22)
+
+// cooperation and coordination subcateogories averages
+
+egen a_avg = rowmean(a1 a2)
+egen b_avg = rowmean(b1 b2)
+egen c_avg = rowmean(c1 c2)
+egen d_avg = rowmean(d1 d2)
+egen e_avg = rowmean(e1 e2)
+egen f_avg = rowmean(f1 f2)
+
+gen fed = a_avg + d_avg
+gen local = b_avg + c_avg
+gen ddc = f_avg
 
 // regressions
 
@@ -82,25 +110,107 @@ regress rel_chgnl  ln_baseline_nl_km lisa_avg high_school_percent ageatelection 
 outreg2 using v3_intial_regression.doc, append dec(3)
 
 
-// lisa average calculations
-
-
-egen gov_magm_avg = rowmean(gov_magm_20_21 gov_magm_21_22)
-egen org_admin_avg = rowmean(org_admin_20_21 org_admin_21_22)
-egen budg_magm_avg = rowmean(budg_magm_20_21 budg_magm_21_22)
-egen fiscal_magm_avg = rowmean(fiscal_magm_20_21 fiscal_magm_21_22)
-egen service_dev_avg = rowmean(service_dev_20_21 service_dev_21_22)
-egen jud_exe_avg = rowmean(jud_exe_20_21 jud_exe_21_22)
-egen phy_infra_avg = rowmean(phy_infra_20_21 phy_infra_21_22)
-egen soc_inc_avg = rowmean(soc_inc_20_21 soc_inc_21_22)
-egen env_protec_avg = rowmean(env_protec_20_21 env_protec_21_22)
-egen cop_cor_avg = rowmean(cop_cor_20_21 cop_cor_21_22)
 
 
 
+// regression in cop cor grouping
 
-//regressions in LISA breakdown
+regress rel_chgnl ln_baseline_nl_km, r
+outreg2 using v3_lisa_regression.doc, replace dec(3)
 
+
+regress rel_chgnl  ln_baseline_nl_km gov_magm_avg org_admin_avg budg_magm_avg fiscal_magm_avg service_dev_avg jud_exe_avg phy_infra_avg soc_inc_avg env_protec_avg fed local ddc, r
+outreg2 using v3_lisa_regression.doc, append dec(3)
+
+
+regress rel_chgnl  ln_baseline_nl_km gov_magm_avg org_admin_avg budg_magm_avg fiscal_magm_avg service_dev_avg jud_exe_avg phy_infra_avg soc_inc_avg env_protec_avg fed local ddc high_school_percent, r
+outreg2 using v3_lisa_regression.doc, append dec(3)
+
+
+regress rel_chgnl  ln_baseline_nl_km gov_magm_avg org_admin_avg budg_magm_avg fiscal_magm_avg service_dev_avg jud_exe_avg phy_infra_avg soc_inc_avg env_protec_avg fed local ddc high_school_percent ageatelection, r
+outreg2 using v3_lisa_regression.doc, append dec(3)
+
+
+regress rel_chgnl  ln_baseline_nl_km gov_magm_avg org_admin_avg budg_magm_avg fiscal_magm_avg service_dev_avg jud_exe_avg phy_infra_avg soc_inc_avg env_protec_avg fed local ddc high_school_percent ageatelection female, r
+outreg2 using v3_lisa_regression.doc, append dec(3)
+
+
+regress rel_chgnl  ln_baseline_nl_km gov_magm_avg org_admin_avg budg_magm_avg fiscal_magm_avg service_dev_avg jud_exe_avg phy_infra_avg soc_inc_avg env_protec_avg fed local ddc high_school_percent ageatelection female gov_coalitiion, r
+outreg2 using v3_lisa_regression.doc, append dec(3)
+
+
+regress rel_chgnl  ln_baseline_nl_km gov_magm_avg org_admin_avg budg_magm_avg fiscal_magm_avg service_dev_avg jud_exe_avg phy_infra_avg soc_inc_avg env_protec_avg fed local ddc high_school_percent ageatelection female gov_coalitiion , r
+outreg2 using v3_lisa_regression.doc, append dec(3)
+
+
+regress rel_chgnl ln_baseline_nl_km gov_magm_avg org_admin_avg budg_magm_avg fiscal_magm_avg service_dev_avg jud_exe_avg phy_infra_avg soc_inc_avg env_protec_avg fed local ddc high_school_percent ageatelection female gov_coalitiion ln_popn, r
+
+
+regress rel_chgnl ln_baseline_nl_km gov_magm_avg org_admin_avg budg_magm_avg fiscal_magm_avg service_dev_avg jud_exe_avg phy_infra_avg soc_inc_avg env_protec_avg fed local ddc high_school_percent ageatelection female gov_coalitiion ln_popn, r
+outreg2 using v3_lisa_regression.doc, append dec(3)
+
+
+regress rel_chgnl ln_baseline_nl_km gov_magm_avg org_admin_avg budg_magm_avg fiscal_magm_avg service_dev_avg jud_exe_avg phy_infra_avg soc_inc_avg env_protec_avg fed local ddc high_school_percent ageatelection female gov_coalitiion ln_popn urban_num, r
+outreg2 using v3_lisa_regression.doc, append dec(3)
+
+////////////////
+
+regress rel_chgnl ln_baseline_nl_km gov_magm_avg org_admin_avg budg_magm_avg fiscal_magm_avg service_dev_avg jud_exe_avg phy_infra_avg soc_inc_avg env_protec_avg cop_cor_avg high_school_percent ageatelection female gov_coalitiion ln_popn urban_num, r
+outreg2 using v3_lisa_regression.doc, append dec(3)
+
+///////////////
+
+regress rel_chgnl ln_baseline_nl_km gov_magm_avg org_admin_avg budg_magm_avg fiscal_magm_avg service_dev_avg jud_exe_avg phy_infra_avg soc_inc_avg env_protec_avg fed ddc high_school_percent ageatelection female gov_coalitiion ln_popn urban_num, r
+////////////////
+
+
+//regressions in cop cor breakdown
+
+
+regress rel_chgnl ln_baseline_nl_km, r
+outreg2 using v3_lisa_regression.doc, replace dec(3)
+
+
+regress rel_chgnl  ln_baseline_nl_km gov_magm_avg org_admin_avg budg_magm_avg fiscal_magm_avg service_dev_avg jud_exe_avg phy_infra_avg soc_inc_avg env_protec_avg a_avg b_avg c_avg d_avg e_avg f_avg, r
+outreg2 using v3_lisa_regression.doc, append dec(3)
+
+
+regress rel_chgnl  ln_baseline_nl_km gov_magm_avg org_admin_avg budg_magm_avg fiscal_magm_avg service_dev_avg jud_exe_avg phy_infra_avg soc_inc_avg env_protec_avg a_avg b_avg c_avg d_avg e_avg f_avg high_school_percent, r
+outreg2 using v3_lisa_regression.doc, append dec(3)
+
+
+regress rel_chgnl  ln_baseline_nl_km gov_magm_avg org_admin_avg budg_magm_avg fiscal_magm_avg service_dev_avg jud_exe_avg phy_infra_avg soc_inc_avg env_protec_avg a_avg b_avg c_avg d_avg e_avg f_avg high_school_percent ageatelection, r
+outreg2 using v3_lisa_regression.doc, append dec(3)
+
+
+regress rel_chgnl  ln_baseline_nl_km gov_magm_avg org_admin_avg budg_magm_avg fiscal_magm_avg service_dev_avg jud_exe_avg phy_infra_avg soc_inc_avg env_protec_avg a_avg b_avg c_avg d_avg e_avg f_avg high_school_percent ageatelection female, r
+outreg2 using v3_lisa_regression.doc, append dec(3)
+
+
+regress rel_chgnl  ln_baseline_nl_km gov_magm_avg org_admin_avg budg_magm_avg fiscal_magm_avg service_dev_avg jud_exe_avg phy_infra_avg soc_inc_avg env_protec_avg a_avg b_avg c_avg d_avg e_avg f_avg high_school_percent ageatelection female gov_coalitiion, r
+outreg2 using v3_lisa_regression.doc, append dec(3)
+
+
+regress rel_chgnl  ln_baseline_nl_km gov_magm_avg org_admin_avg budg_magm_avg fiscal_magm_avg service_dev_avg jud_exe_avg phy_infra_avg soc_inc_avg env_protec_avg a_avg b_avg c_avg d_avg e_avg f_avg high_school_percent ageatelection female gov_coalitiion , r
+outreg2 using v3_lisa_regression.doc, append dec(3)
+
+
+regress rel_chgnl ln_baseline_nl_km gov_magm_avg org_admin_avg budg_magm_avg fiscal_magm_avg service_dev_avg jud_exe_avg phy_infra_avg soc_inc_avg env_protec_avg a_avg b_avg c_avg d_avg e_avg f_avg high_school_percent ageatelection female gov_coalitiion ln_popn, r
+
+
+regress rel_chgnl ln_baseline_nl_km gov_magm_avg org_admin_avg budg_magm_avg fiscal_magm_avg service_dev_avg jud_exe_avg phy_infra_avg soc_inc_avg env_protec_avg a_avg b_avg c_avg d_avg e_avg f_avg high_school_percent ageatelection female gov_coalitiion ln_popn, r
+outreg2 using v3_lisa_regression.doc, append dec(3)
+
+
+regress rel_chgnl ln_baseline_nl_km gov_magm_avg org_admin_avg budg_magm_avg fiscal_magm_avg service_dev_avg jud_exe_avg phy_infra_avg soc_inc_avg env_protec_avg a_avg b_avg c_avg d_avg e_avg f_avg high_school_percent ageatelection female gov_coalitiion ln_popn urban_num, r
+outreg2 using v3_lisa_regression.doc, append dec(3)
+
+regress rel_chgnl ln_baseline_nl_km gov_magm_avg org_admin_avg budg_magm_avg fiscal_magm_avg service_dev_avg jud_exe_avg phy_infra_avg soc_inc_avg env_protec_avg cop_cor_avg high_school_percent ageatelection female gov_coalitiion ln_popn urban_num, r
+outreg2 using v3_lisa_regression.doc, append dec(3)
+
+//////////////
+
+////////////////////////////
 
 regress rel_chgnl ln_baseline_nl_km, r
 outreg2 using v3_lisa_regression.doc, replace dec(3)
@@ -141,7 +251,9 @@ regress rel_chgnl ln_baseline_nl_km gov_magm_avg org_admin_avg budg_magm_avg fis
 outreg2 using v3_lisa_regression.doc, append dec(3)
 
 
-// revised regression
+// cop_cor breakdown regression
+
+
 
 
 gen other_lisa = (gov_magm_avg + org_admin_avg + budg_magm_avg + fiscal_magm_avg + service_dev_avg + jud_exe_avg + phy_infra_avg + soc_inc_avg)
