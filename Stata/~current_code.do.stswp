@@ -8,7 +8,7 @@ log close
 log using MainDataSet.log, replace
 
 // Load data
-import delimited "/Users/apanta1/Desktop/Summer Research 2024/Night_Light_Institutional_Capacity/Stata/Cop_break.csv", clear
+import delimited "/Users/apanta1/Desktop/Summer Research 2024/Night_Light_Institutional_Capacity/Stata/instrument_val.csv", clear
 
 // removing empty rows
 drop if missing(unit_name)
@@ -150,10 +150,24 @@ regress rel_chgnl ln_baseline_nl_km gov_magm_avg org_admin_avg budg_magm_avg fis
 outreg2 using v3_lisa_regression.doc, append dec(3)
 
 
-regress rel_chgnl ln_baseline_nl_km gov_magm_avg org_admin_avg budg_magm_avg fiscal_magm_avg service_dev_avg jud_exe_avg phy_infra_avg soc_inc_avg env_protec_avg fed local ddc high_school_percent ageatelection female gov_coalitiion ln_popn urban_num neigbor_percent, r
+regress rel_chgnl ln_baseline_nl_km gov_magm_avg org_admin_avg budg_magm_avg fiscal_magm_avg service_dev_avg jud_exe_avg phy_infra_avg soc_inc_avg env_protec_avg fed local ddc high_school_percent ageatelection female gov_coalitiion ln_popn urban_num, r
+outreg2 using v3_lisa_regression.doc, append dec(3)
+
+regress rel_chgnl ln_baseline_nl_km gov_magm_avg org_admin_avg budg_magm_avg fiscal_magm_avg service_dev_avg jud_exe_avg phy_infra_avg soc_inc_avg env_protec_avg fed local ddc high_school_percent ageatelection female gov_coalitiion ln_popn urban_num neighbor_percent, r
 outreg2 using v3_lisa_regression.doc, append dec(3)
 
 ////////////////
+
+////instrumental check
+
+//reduced form
+regress rel_chgnl ln_baseline_nl_km gov_magm_avg org_admin_avg budg_magm_avg fiscal_magm_avg service_dev_avg jud_exe_avg phy_infra_avg soc_inc_avg env_protec_avg fed ddc high_school_percent ageatelection female gov_coalitiion ln_popn urban_num neighbor_percent, r
+
+//first stage
+regress local neighbor_percent ln_baseline_nl_km gov_magm_avg org_admin_avg budg_magm_avg fiscal_magm_avg service_dev_avg jud_exe_avg phy_infra_avg soc_inc_avg env_protec_avg fed ddc high_school_percent ageatelection female gov_coalitiion ln_popn urban_num, r
+
+regress local neighbor_percent
+
 
 regress rel_chgnl ln_baseline_nl_km gov_magm_avg org_admin_avg budg_magm_avg fiscal_magm_avg service_dev_avg jud_exe_avg phy_infra_avg soc_inc_avg env_protec_avg cop_cor_avg high_school_percent ageatelection female gov_coalitiion ln_popn urban_num, r
 outreg2 using v3_lisa_regression.doc, append dec(3)
