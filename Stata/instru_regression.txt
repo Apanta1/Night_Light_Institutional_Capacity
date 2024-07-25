@@ -1,0 +1,45 @@
+	(1)
+VARIABLES	rel_chgnl
+	
+local_cop	0.013
+	(0.018)
+ln_baseline_nl_km	-0.002
+	(0.031)
+high_school_percent	0.006
+	(0.006)
+ln_popn	0.022
+	(0.064)
+urban_num	-0.064
+	(0.059)
+ageatelection	-0.002
+	(0.002)
+female	-0.001
+	(0.118)
+gov_magm_per	0.000
+	(0.002)
+org_admin_per	0.000
+	(0.001)
+budg_magm_per	-0.001
+	(0.002)
+fiscal_magm_per	-0.002
+	(0.002)
+service_dev_per	-0.001
+	(0.003)
+jud_exe_per	-0.001
+	(0.001)
+phy_infra_per	-0.001
+	(0.003)
+soc_inc_per	0.001
+	(0.002)
+env_protec_per	-0.004
+	(0.005)
+fed_cop	-0.005
+	(0.007)
+ddc_cop	-0.002
+	(0.003)
+Constant	0.472
+	(1.094)
+	
+Observations	691
+Standard errors in parentheses	
+*** p<0.01, ** p<0.05, * p<0.1	
