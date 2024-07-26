@@ -421,6 +421,7 @@ twoway (scatter rel_chgnl  ageatelection) (lfit rel_chgnl  ageatelection)
 //
 scatter rel_chgnl  ageatelection if gov_coalitiion == 0, mcolor(red) || scatter rel_chgnl  ageatelection if gov_coalitiion == 1, mcolor(green)
 
+summarize politicalaffiliation
 
 
 

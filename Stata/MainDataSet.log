@@ -3180,3 +3180,25 @@ dir : seeout
 . 
 end of do-file
 
+. do "/var/folders/77/r2kbz41j5hz_44s8bp00q04m0000gn/T//SD14229.000000"
+
+. graph pie politicalaffiliation
+string variables not allowed in varlist;
+politicalaffiliation is a string variable
+r(109);
+
+end of do-file
+
+r(109);
+
+. do "/var/folders/77/r2kbz41j5hz_44s8bp00q04m0000gn/T//SD14229.000000"
+
+. summarize politicalaffiliation
+
+    Variable |        Obs        Mean    Std. dev.       Min        Max
+-------------+---------------------------------------------------------
+politicala~n |          0
+
+. 
+end of do-file
+
