@@ -13,6 +13,8 @@ import delimited "/Users/apanta1/Desktop/Summer Research 2024/Night_Light_Instit
 // removing empty rows
 drop if missing(unit_name)
 
+drop if politicalaffiliation != "CPN-UML"
+
 //droping municipality without data
 drop if lisa_20_21 == "N/A"
 drop if lisa_21_22 == "N/A"
@@ -93,6 +95,8 @@ gen fed_cop = ((a_avg + d_avg)/2) * 100
 gen local_cop = ((b_avg + c_avg + e_avg)/3) * 100
 gen ddc_cop = (f_avg) * 100
 
+sum neighbor_percent
+histogram neighbor_percent
 // regressions
 
 regress rel_chgnl  ln_baseline_nl_km, r
@@ -420,6 +424,21 @@ graph box rel_chgnl , over(female)
 twoway (scatter rel_chgnl  ageatelection) (lfit rel_chgnl  ageatelection) 
 //
 scatter rel_chgnl  ageatelection if gov_coalitiion == 0, mcolor(red) || scatter rel_chgnl  ageatelection if gov_coalitiion == 1, mcolor(green)
+
+twoway (scatter rel_chgnl local_cop if province != 2, mcolor(green)) (lfit rel_chgnl local_cop if province == 2) || (scatter rel_chgnl local_cop if province == 2, mcolor(red)) (lfit rel_chgnl local_cop if province != 2)
+
+twoway (scatter rel_chgnl neighbor_percent if province != 2, mcolor(green)) (lfit rel_chgnl neighbor_percent if province == 2) || (scatter rel_chgnl neighbor_percent if province == 2, mcolor(red)) (lfit rel_chgnl neighbor_percent if province != 2)
+
+twoway (scatter rel_chgnl local_cop if province != 2, mcolor(green)) (lfit rel_chgnl local_cop if province == 2) || (scatter rel_chgnl local_cop if province == 2, mcolor(red)) (lfit rel_chgnl local_cop if province != 2)
+
+twoway (scatter rel_chgnl high_school_percent if province != 2, mcolor(green)) (lfit rel_chgnl high_school_percent if province == 2) || (scatter rel_chgnl high_school_percent if province == 2, mcolor(red)) (lfit rel_chgnl high_school_percent if province != 2)
+
+twoway (scatter local_cop neighbor_percent if province != 2, mcolor(green)) (lfit local_cop neighbor_percent if province == 2) || (scatter local_cop neighbor_percent if province == 2, mcolor(red)) (lfit local_cop neighbor_percent if province != 2)
+
+
+twoway (scatter rel_chgnl neighbor_percent) (lfit rel_chgnl neighbor_percent) 
+
+
 
 summarize politicalaffiliation
 
