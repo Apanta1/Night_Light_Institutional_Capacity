@@ -13,8 +13,6 @@ import delimited "/Users/apanta1/Desktop/Summer Research 2024/Night_Light_Instit
 // removing empty rows
 drop if missing(unit_name)
 
-drop if politicalaffiliation != "CPN-UML"
-
 //droping municipality without data
 drop if lisa_20_21 == "N/A"
 drop if lisa_21_22 == "N/A"
@@ -95,8 +93,9 @@ gen fed_cop = ((a_avg + d_avg)/2) * 100
 gen local_cop = ((b_avg + c_avg + e_avg)/3) * 100
 gen ddc_cop = (f_avg) * 100
 
-sum neighbor_percent
-histogram neighbor_percent
+gen neighbor_dummy = 0
+replace neighbor_dummy = 1 if neighbor_percent > 20
+
 // regressions
 
 regress rel_chgnl  ln_baseline_nl_km, r
@@ -138,6 +137,7 @@ outreg2 using v3_intial_regression.doc, append dec(3)
 
 
 // main regression in cop cor breakdown
+**# Bookmark #1
 
 
 regress rel_chgnl gov_magm_per org_admin_per budg_magm_per fiscal_magm_per service_dev_per jud_exe_per phy_infra_per soc_inc_per env_protec_per fed_cop local_cop ddc_cop, r
@@ -199,6 +199,7 @@ outreg2 using v3_lisa_regression.doc, append dec(3)
 
 ///// first stage regression
 
+
 regress local_cop neighbor_percent, r
 outreg2 using instru_regression.doc, replace dec(3)
 
@@ -223,11 +224,58 @@ outreg2 using instru_regression.doc, append dec(3)
 regress local_cop neighbor_percent high_school_percent ln_popn urban_num ageatelection female gov_magm_per org_admin_per budg_magm_per fiscal_magm_per service_dev_per jud_exe_per phy_infra_per soc_inc_per env_protec_per fed_cop ddc_cop, r
 outreg2 using instru_regression.doc, append dec(3)
 
+//////////////////
+
+regress local_cop neighbor_percent high_school_percent ln_popn urban_num ageatelection female, r
+outreg2 using instru_regression.doc, append dec(3)
+
+
+regress local_cop neighbor_percent high_school_percent ln_popn urban_num ageatelection female gov_magm_per org_admin_per budg_magm_per fiscal_magm_per service_dev_per jud_exe_per phy_infra_per soc_inc_per env_protec_per, r
+outreg2 using instru_regression.doc, append dec(3)
+
 
 /// least square regressions
 
 ivregress 2sls rel_chgnl ln_baseline_nl_km high_school_percent ln_popn urban_num ageatelection female gov_magm_per org_admin_per budg_magm_per fiscal_magm_per service_dev_per jud_exe_per phy_infra_per soc_inc_per env_protec_per fed_cop ddc_cop (local_cop = neighbor_percent)
 outreg2 using instru_regression.doc, replace dec(3)
+
+
+
+// main regression without multicollinearity
+**# Bookmark #1
+
+
+regress rel_chgnl gov_magm_per org_admin_per budg_magm_per fiscal_magm_per service_dev_per jud_exe_per phy_infra_per soc_inc_per env_protec_per local_cop, r
+outreg2 using v3_lisa_regression.doc, replace dec(3)
+
+regress rel_chgnl gov_magm_per org_admin_per budg_magm_per fiscal_magm_per service_dev_per jud_exe_per phy_infra_per soc_inc_per env_protec_per local_cop ln_baseline_nl_km, r
+outreg2 using v3_lisa_regression.doc, append dec(3)
+
+regress rel_chgnl gov_magm_per org_admin_per budg_magm_per fiscal_magm_per service_dev_per jud_exe_per phy_infra_per soc_inc_per env_protec_per local_cop ln_baseline_nl_km high_school_percent, r
+outreg2 using v3_lisa_regression.doc, append dec(3)
+
+regress rel_chgnl gov_magm_per org_admin_per budg_magm_per fiscal_magm_per service_dev_per jud_exe_per phy_infra_per soc_inc_per env_protec_per local_cop ln_baseline_nl_km high_school_percent ageatelection, r
+outreg2 using v3_lisa_regression.doc, append dec(3)
+
+regress rel_chgnl gov_magm_per org_admin_per budg_magm_per fiscal_magm_per service_dev_per jud_exe_per phy_infra_per soc_inc_per env_protec_per local_cop ln_baseline_nl_km high_school_percent ageatelection female, r
+outreg2 using v3_lisa_regression.doc, append dec(3)
+
+regress rel_chgnl gov_magm_per org_admin_per budg_magm_per fiscal_magm_per service_dev_per jud_exe_per phy_infra_per soc_inc_per env_protec_per local_cop ln_baseline_nl_km high_school_percent ageatelection female gov_coalitiion, r
+outreg2 using v3_lisa_regression.doc, append dec(3)
+
+regress rel_chgnl gov_magm_per org_admin_per budg_magm_per fiscal_magm_per service_dev_per jud_exe_per phy_infra_per soc_inc_per env_protec_per local_cop ln_baseline_nl_km high_school_percent ageatelection female gov_coalitiion ln_popn, r
+outreg2 using v3_lisa_regression.doc, append dec(3)
+
+regress rel_chgnl gov_magm_per org_admin_per budg_magm_per fiscal_magm_per service_dev_per jud_exe_per phy_infra_per soc_inc_per env_protec_per local_cop ln_baseline_nl_km high_school_percent ageatelection female gov_coalitiion ln_popn, r
+outreg2 using v3_lisa_regression.doc, append dec(3)
+
+regress rel_chgnl gov_magm_per org_admin_per budg_magm_per fiscal_magm_per service_dev_per jud_exe_per phy_infra_per soc_inc_per env_protec_per local_cop ln_baseline_nl_km high_school_percent ageatelection female gov_coalitiion ln_popn urban_num, r
+outreg2 using v3_lisa_regression.doc, append dec(3)
+
+//////////////////////
+
+regress rel_chgnl gov_magm_per budg_magm_per service_dev_per jud_exe_per phy_infra_per soc_inc_per env_protec_per local_cop ln_baseline_nl_km high_school_percent ageatelection female gov_coalitiion ln_popn urban_num, r
+outreg2 using v3_lisa_regression.doc, append dec(3)
 
 
 
@@ -436,7 +484,7 @@ twoway (scatter rel_chgnl high_school_percent if province != 2, mcolor(green)) (
 twoway (scatter local_cop neighbor_percent if province != 2, mcolor(green)) (lfit local_cop neighbor_percent if province == 2) || (scatter local_cop neighbor_percent if province == 2, mcolor(red)) (lfit local_cop neighbor_percent if province != 2)
 
 
-twoway (scatter rel_chgnl neighbor_percent) (lfit rel_chgnl neighbor_percent) 
+twoway (scatter rel_chgnl neighbor_percent) (lfit rel_chgnl neighbor_percent)
 
 
 
