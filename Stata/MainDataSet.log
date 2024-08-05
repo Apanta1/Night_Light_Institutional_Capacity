@@ -2,14 +2,14 @@
       name:  <unnamed>
        log:  /Users/apanta1/Desktop/Summer Research 2024/Night_Light_Institutional_Capacity/Stata/MainDataSet.log
   log type:  text
- opened on:   2 Aug 2024, 10:21:18
+ opened on:   5 Aug 2024, 12:27:33
 
 . 
 . // Load data
 . import delimited "/Users/apanta1/Desktop/Summer Research 2024/Night_Light_Institutional_Capacity/Stata/instrume
 > nt_val.csv", clear
 (encoding automatically selected: UTF-8)
-(66 vars, 5,116 obs)
+(67 vars, 5,116 obs)
 
 . 
 . // removing empty rows
@@ -160,151 +160,978 @@ lisa_21_22: all characters numeric; replaced as double
 (190 missing values generated)
 
 . 
-. // test regression
-. regress ln_local_cop neighbor_dummy, r
+end of do-file
 
-Linear regression                               Number of obs     =        501
-                                                F(1, 499)         =       8.84
-                                                Prob > F          =     0.0031
-                                                R-squared         =     0.0168
-                                                Root MSE          =     .73476
+. do "/var/folders/77/r2kbz41j5hz_44s8bp00q04m0000gn/T//SD22128.000000"
 
---------------------------------------------------------------------------------
-               |               Robust
-  ln_local_cop | Coefficient  std. err.      t    P>|t|     [95% conf. interval]
----------------+----------------------------------------------------------------
-neighbor_dummy |   .1944276   .0653816     2.97   0.003     .0659706    .3228847
-         _cons |   3.484604   .0450027    77.43   0.000     3.396186    3.573022
---------------------------------------------------------------------------------
+. gen ln_elf = log(elf) + 1
 
 . 
 end of do-file
 
 . do "/var/folders/77/r2kbz41j5hz_44s8bp00q04m0000gn/T//SD22128.000000"
 
-. regress local_cop neighbor_dummy high_school_percent ln_popn urban_num ageatelection female gov_magm_per org_ad
-> min_per budg_magm_per fiscal_magm_per service_dev_per jud_exe_per phy_infra_per soc_inc_per env_protec_per, r
-
-Linear regression                               Number of obs     =        691
-                                                F(15, 675)        =      27.32
-                                                Prob > F          =     0.0000
-                                                R-squared         =     0.3380
-                                                Root MSE          =     25.295
-
--------------------------------------------------------------------------------------
-                    |               Robust
-          local_cop | Coefficient  std. err.      t    P>|t|     [95% conf. interval]
---------------------+----------------------------------------------------------------
-     neighbor_dummy |   1.473988   2.063993     0.71   0.475     -2.57863    5.526607
-high_school_percent |   .3415287   .2226395     1.53   0.125    -.0956204    .7786779
-            ln_popn |   2.335638   1.651508     1.41   0.158    -.9070727    5.578349
-          urban_num |   1.760357   2.653522     0.66   0.507    -3.449793    6.970507
-      ageatelection |   .2372019   .1084446     2.19   0.029     .0242726    .4501312
-             female |   3.261497   6.823138     0.48   0.633    -10.13563    16.65862
-       gov_magm_per |   .0709287   .1030077     0.69   0.491    -.1313255    .2731828
-      org_admin_per |   .0002209    .083808     0.00   0.998    -.1643348    .1647767
-      budg_magm_per |   .0571763   .0988268     0.58   0.563    -.1368686    .2512213
-    fiscal_magm_per |   .1645498   .1020342     1.61   0.107    -.0357927    .3648923
-    service_dev_per |   .1087364   .1126278     0.97   0.335    -.1124066    .3298794
-        jud_exe_per |   .0675708   .0743393     0.91   0.364    -.0783932    .2135348
-      phy_infra_per |   .2620143    .080124     3.27   0.001     .1046921    .4193366
-        soc_inc_per |   .0493749   .0663171     0.74   0.457    -.0808377    .1795874
-     env_protec_per |   .4429564   .0945622     4.68   0.000     .2572849    .6286279
-              _cons |  -73.97744   17.25428    -4.29   0.000    -107.8559   -40.09893
--------------------------------------------------------------------------------------
+. twoway (scatter rel_chgnl ln_elf) (lfit rel_chgnl ln_elf)
 
 . 
 end of do-file
 
 . do "/var/folders/77/r2kbz41j5hz_44s8bp00q04m0000gn/T//SD22128.000000"
 
-. regress local_cop neighbor_dummy high_school_percent ln_popn urban_num ageatelection female, r
-
-Linear regression                               Number of obs     =        691
-                                                F(6, 684)         =      13.63
-                                                Prob > F          =     0.0000
-                                                R-squared         =     0.1111
-                                                Root MSE          =     29.119
-
--------------------------------------------------------------------------------------
-                    |               Robust
-          local_cop | Coefficient  std. err.      t    P>|t|     [95% conf. interval]
---------------------+----------------------------------------------------------------
-     neighbor_dummy |    4.91406   2.287286     2.15   0.032     .4231157    9.405005
-high_school_percent |   1.195568   .2446727     4.89   0.000     .7151685    1.675968
-            ln_popn |   4.138399   1.863756     2.22   0.027     .4790294     7.79777
-          urban_num |   3.732025   2.986465     1.25   0.212    -2.131714    9.595764
-      ageatelection |   .2760969    .125703     2.20   0.028     .0292868     .522907
-             female |   4.382557   8.243785     0.53   0.595    -11.80361    20.56872
-              _cons |  -39.01983   18.69696    -2.09   0.037    -75.73016   -2.309503
--------------------------------------------------------------------------------------
+. twoway (scatter rel_chgnl elf) (lfit rel_chgnl elf)
 
 . 
 end of do-file
 
 . do "/var/folders/77/r2kbz41j5hz_44s8bp00q04m0000gn/T//SD22128.000000"
 
-. regress rel_chgnl budg_magm_per phy_infra_per env_protec_per local_cop ln_baseline_nl_km high_school_percent ag
-> eatelection female gov_coalitiion ln_popn urban_num, r
+. regress rel_chgnl local_cop, r
 
 Linear regression                               Number of obs     =        691
-                                                F(11, 679)        =      15.32
+                                                F(1, 689)         =      27.21
                                                 Prob > F          =     0.0000
-                                                R-squared         =     0.2077
-                                                Root MSE          =     .14722
+                                                R-squared         =     0.0420
+                                                Root MSE          =      .1607
+
+------------------------------------------------------------------------------
+             |               Robust
+   rel_chgnl | Coefficient  std. err.      t    P>|t|     [95% conf. interval]
+-------------+----------------------------------------------------------------
+   local_cop |   .0010935   .0002096     5.22   0.000     .0006819    .0015051
+       _cons |   .3028634   .0088294    34.30   0.000     .2855277    .3201992
+------------------------------------------------------------------------------
+
+. outreg2 using v3_lisa_regression.doc, replace dec(3)
+v3_lisa_regression.doc
+dir : seeout
+
+. 
+. regress rel_chgnl local_cop ln_baseline_nl_km, r
+
+Linear regression                               Number of obs     =        691
+                                                F(2, 688)         =      32.06
+                                                Prob > F          =     0.0000
+                                                R-squared         =     0.1131
+                                                Root MSE          =     .15474
+
+-----------------------------------------------------------------------------------
+                  |               Robust
+        rel_chgnl | Coefficient  std. err.      t    P>|t|     [95% conf. interval]
+------------------+----------------------------------------------------------------
+        local_cop |   .0009742   .0002034     4.79   0.000     .0005749    .0013735
+ln_baseline_nl_km |   .0768316   .0134978     5.69   0.000     .0503298    .1033333
+            _cons |   .2823885   .0082754    34.12   0.000     .2661404    .2986365
+-----------------------------------------------------------------------------------
+
+. outreg2 using v3_lisa_regression.doc, append dec(3)
+v3_lisa_regression.doc
+dir : seeout
+
+. 
+. regress rel_chgnl local_cop ln_baseline_nl_km gov_magm_per org_admin_per budg_magm_per fiscal_magm_per phy_infr
+> a_per soc_inc_per env_protec_per, r
+
+Linear regression                               Number of obs     =        691
+                                                F(9, 681)         =       8.67
+                                                Prob > F          =     0.0000
+                                                R-squared         =     0.1203
+                                                Root MSE          =      .1549
+
+-----------------------------------------------------------------------------------
+                  |               Robust
+        rel_chgnl | Coefficient  std. err.      t    P>|t|     [95% conf. interval]
+------------------+----------------------------------------------------------------
+        local_cop |   .0009519   .0002335     4.08   0.000     .0004934    .0014104
+ln_baseline_nl_km |   .0734237   .0135522     5.42   0.000     .0468145    .1000329
+     gov_magm_per |   -.000123    .000723    -0.17   0.865    -.0015426    .0012966
+    org_admin_per |  -.0005944   .0005477    -1.09   0.278    -.0016698    .0004811
+    budg_magm_per |  -.0000152   .0005779    -0.03   0.979      -.00115    .0011195
+  fiscal_magm_per |  -.0004046   .0006121    -0.66   0.509    -.0016064    .0007973
+    phy_infra_per |    .000747   .0004389     1.70   0.089    -.0001146    .0016087
+      soc_inc_per |    .000354   .0003713     0.95   0.341     -.000375    .0010829
+   env_protec_per |  -.0002449   .0004945    -0.50   0.621    -.0012158    .0007261
+            _cons |   .3218093   .0577291     5.57   0.000     .2084608    .4351578
+-----------------------------------------------------------------------------------
+
+. outreg2 using v3_lisa_regression.doc, append dec(3)
+v3_lisa_regression.doc
+dir : seeout
+
+. 
+. regress rel_chgnl local_cop ln_baseline_nl_km gov_magm_per org_admin_per budg_magm_per fiscal_magm_per phy_infr
+> a_per soc_inc_per env_protec_per elf, r
+
+Linear regression                               Number of obs     =        691
+                                                F(10, 680)        =      11.20
+                                                Prob > F          =     0.0000
+                                                R-squared         =     0.1316
+                                                Root MSE          =     .15401
+
+-----------------------------------------------------------------------------------
+                  |               Robust
+        rel_chgnl | Coefficient  std. err.      t    P>|t|     [95% conf. interval]
+------------------+----------------------------------------------------------------
+        local_cop |   .0008967   .0002313     3.88   0.000     .0004425    .0013509
+ln_baseline_nl_km |   .0597428   .0151151     3.95   0.000     .0300649    .0894208
+     gov_magm_per |  -.0000256   .0007116    -0.04   0.971    -.0014229    .0013716
+    org_admin_per |  -.0005925   .0005423    -1.09   0.275    -.0016573    .0004724
+    budg_magm_per |  -.0000794   .0005759    -0.14   0.890    -.0012101    .0010514
+  fiscal_magm_per |  -.0003277   .0006052    -0.54   0.588     -.001516    .0008606
+    phy_infra_per |   .0006725   .0004395     1.53   0.126    -.0001904    .0015355
+      soc_inc_per |   .0004043   .0003677     1.10   0.272    -.0003177    .0011263
+   env_protec_per |  -.0002979    .000493    -0.60   0.546     -.001266    .0006702
+              elf |   .1242344   .0348596     3.56   0.000     .0557891    .1926797
+            _cons |    .227392   .0572474     3.97   0.000     .1149891     .339795
+-----------------------------------------------------------------------------------
+
+. outreg2 using v3_lisa_regression.doc, append dec(3)
+v3_lisa_regression.doc
+dir : seeout
+
+. 
+. regress rel_chgnl local_cop ln_baseline_nl_km gov_magm_per org_admin_per budg_magm_per fiscal_magm_per phy_infr
+> a_per soc_inc_per env_protec_per elf high_school_percent, r
+
+Linear regression                               Number of obs     =        691
+                                                F(11, 679)        =      17.48
+                                                Prob > F          =     0.0000
+                                                R-squared         =     0.1912
+                                                Root MSE          =     .14874
 
 -------------------------------------------------------------------------------------
                     |               Robust
           rel_chgnl | Coefficient  std. err.      t    P>|t|     [95% conf. interval]
 --------------------+----------------------------------------------------------------
-      budg_magm_per |  -.0002962   .0004828    -0.61   0.540    -.0012442    .0006517
-      phy_infra_per |   .0003292   .0004259     0.77   0.440     -.000507    .0011654
-     env_protec_per |  -.0011686   .0004379    -2.67   0.008    -.0020283   -.0003088
-          local_cop |    .000727   .0002216     3.28   0.001     .0002919    .0011621
-  ln_baseline_nl_km |   .0069722   .0164463     0.42   0.672    -.0253196     .039264
-high_school_percent |   .0089578   .0013849     6.47   0.000     .0062386     .011677
-      ageatelection |  -.0006294   .0006313    -1.00   0.319     -.001869    .0006102
-             female |   .0545269   .0509584     1.07   0.285    -.0455281    .1545819
-     gov_coalitiion |  -.0210631   .0116776    -1.80   0.072    -.0439916    .0018654
-            ln_popn |   .0585314   .0111824     5.23   0.000     .0365752    .0804876
-          urban_num |  -.0236725   .0167663    -1.41   0.158    -.0565926    .0092475
-              _cons |  -.2747597   .1178781    -2.33   0.020     -.506209   -.0433103
--------------------------------------------------------------------------------------
-
-. 
-end of do-file
-
-. do "/var/folders/77/r2kbz41j5hz_44s8bp00q04m0000gn/T//SD22128.000000"
-
-. regress rel_chgnl budg_magm_per phy_infra_per env_protec_per neighbor_dummy ln_baseline_nl_km high_school_perce
-> nt ageatelection female gov_coalitiion ln_popn urban_num, r
-
-Linear regression                               Number of obs     =        691
-                                                F(11, 679)        =      14.75
-                                                Prob > F          =     0.0000
-                                                R-squared         =     0.1977
-                                                Root MSE          =     .14814
-
--------------------------------------------------------------------------------------
-                    |               Robust
-          rel_chgnl | Coefficient  std. err.      t    P>|t|     [95% conf. interval]
---------------------+----------------------------------------------------------------
-      budg_magm_per |    -.00009   .0004832    -0.19   0.852    -.0010389    .0008588
-      phy_infra_per |     .00052    .000421     1.24   0.217    -.0003067    .0013467
-     env_protec_per |   -.000782   .0004491    -1.74   0.082    -.0016638    .0000997
-     neighbor_dummy |   .0178571   .0133455     1.34   0.181    -.0083462    .0440605
-  ln_baseline_nl_km |   .0100784    .017286     0.58   0.560     -.023862    .0440189
-high_school_percent |   .0090013   .0013833     6.51   0.000     .0062853    .0117174
-      ageatelection |  -.0005023   .0006344    -0.79   0.429    -.0017479    .0007433
-             female |   .0573044   .0505691     1.13   0.258    -.0419862     .156595
-     gov_coalitiion |  -.0235581   .0124953    -1.89   0.060    -.0480922     .000976
-            ln_popn |   .0594468   .0111655     5.32   0.000     .0375237      .08137
-          urban_num |  -.0229711    .016868    -1.36   0.174    -.0560908    .0101487
-              _cons |   -.312247    .116931    -2.67   0.008    -.5418367   -.0826572
+          local_cop |   .0007468   .0002221     3.36   0.001     .0003106    .0011829
+  ln_baseline_nl_km |   .0294483   .0137788     2.14   0.033     .0023942    .0565024
+       gov_magm_per |  -.0004344   .0006976    -0.62   0.534    -.0018041    .0009353
+      org_admin_per |  -.0002071   .0005246    -0.39   0.693    -.0012373     .000823
+      budg_magm_per |  -6.60e-06   .0005581    -0.01   0.991    -.0011024    .0010892
+    fiscal_magm_per |  -.0005654    .000583    -0.97   0.333    -.0017102    .0005794
+      phy_infra_per |   .0004954   .0004363     1.14   0.257    -.0003612     .001352
+        soc_inc_per |   .0002133   .0003563     0.60   0.550    -.0004864     .000913
+     env_protec_per |   -.000794   .0004817    -1.65   0.100    -.0017399    .0001518
+                elf |   .1489463   .0311037     4.79   0.000     .0878754    .2100172
+high_school_percent |   .0091483   .0013777     6.64   0.000     .0064432    .0118534
+              _cons |   .1889153   .0557673     3.39   0.001     .0794183    .2984123
 -------------------------------------------------------------------------------------
 
 . outreg2 using v3_lisa_regression.doc, append dec(3)
 v3_lisa_regression.doc
+dir : seeout
+
+. 
+. regress rel_chgnl local_cop ln_baseline_nl_km gov_magm_per org_admin_per budg_magm_per fiscal_magm_per phy_infr
+> a_per soc_inc_per env_protec_per elf high_school_percent ageatelection, r
+
+Linear regression                               Number of obs     =        691
+                                                F(12, 678)        =      16.05
+                                                Prob > F          =     0.0000
+                                                R-squared         =     0.1920
+                                                Root MSE          =     .14878
+
+-------------------------------------------------------------------------------------
+                    |               Robust
+          rel_chgnl | Coefficient  std. err.      t    P>|t|     [95% conf. interval]
+--------------------+----------------------------------------------------------------
+          local_cop |   .0007624   .0002253     3.38   0.001     .0003201    .0012048
+  ln_baseline_nl_km |   .0302148   .0139396     2.17   0.031     .0028448    .0575848
+       gov_magm_per |  -.0003781   .0006953    -0.54   0.587    -.0017432     .000987
+      org_admin_per |  -.0002166    .000524    -0.41   0.679    -.0012454    .0008122
+      budg_magm_per |  -8.71e-06   .0005592    -0.02   0.988    -.0011067    .0010892
+    fiscal_magm_per |  -.0005683   .0005826    -0.98   0.330    -.0017123    .0005756
+      phy_infra_per |   .0005244   .0004354     1.20   0.229    -.0003305    .0013794
+        soc_inc_per |   .0002119    .000358     0.59   0.554     -.000491    .0009148
+     env_protec_per |  -.0008439   .0004874    -1.73   0.084     -.001801    .0001131
+                elf |    .150872   .0313573     4.81   0.000     .0893028    .2124412
+high_school_percent |   .0092127   .0013768     6.69   0.000     .0065094    .0119159
+      ageatelection |  -.0005067   .0006238    -0.81   0.417    -.0017315    .0007181
+              _cons |   .2077382   .0636457     3.26   0.001     .0827718    .3327047
+-------------------------------------------------------------------------------------
+
+. outreg2 using v3_lisa_regression.doc, append dec(3)
+v3_lisa_regression.doc
+dir : seeout
+
+. 
+. regress rel_chgnl local_cop ln_baseline_nl_km gov_magm_per org_admin_per budg_magm_per fiscal_magm_per phy_infr
+> a_per soc_inc_per env_protec_per elf high_school_percent ageatelection female, r
+
+Linear regression                               Number of obs     =        691
+                                                F(13, 677)        =      15.27
+                                                Prob > F          =     0.0000
+                                                R-squared         =     0.1953
+                                                Root MSE          =     .14858
+
+-------------------------------------------------------------------------------------
+                    |               Robust
+          rel_chgnl | Coefficient  std. err.      t    P>|t|     [95% conf. interval]
+--------------------+----------------------------------------------------------------
+          local_cop |   .0007546   .0002253     3.35   0.001     .0003122     .001197
+  ln_baseline_nl_km |   .0307201   .0138581     2.22   0.027     .0035102    .0579301
+       gov_magm_per |  -.0003963   .0006976    -0.57   0.570     -.001766    .0009734
+      org_admin_per |  -.0002136   .0005239    -0.41   0.684    -.0012424    .0008151
+      budg_magm_per |   .0000557   .0005647     0.10   0.921    -.0010531    .0011646
+    fiscal_magm_per |  -.0005911   .0005866    -1.01   0.314     -.001743    .0005608
+      phy_infra_per |   .0005361    .000435     1.23   0.218    -.0003179    .0013902
+        soc_inc_per |   .0001693   .0003572     0.47   0.636    -.0005321    .0008708
+     env_protec_per |  -.0008312   .0004844    -1.72   0.087    -.0017824    .0001199
+                elf |   .1523266   .0313329     4.86   0.000     .0908052     .213848
+high_school_percent |   .0090989   .0013796     6.60   0.000       .00639    .0118077
+      ageatelection |  -.0004292   .0006291    -0.68   0.495    -.0016645     .000806
+             female |   .0681036   .0492785     1.38   0.167    -.0286535    .1648608
+              _cons |   .2028122   .0638735     3.18   0.002     .0773983    .3282261
+-------------------------------------------------------------------------------------
+
+. outreg2 using v3_lisa_regression.doc, append dec(3)
+v3_lisa_regression.doc
+dir : seeout
+
+. 
+. 
+. regress rel_chgnl local_cop ln_baseline_nl_km gov_magm_per org_admin_per budg_magm_per fiscal_magm_per phy_infr
+> a_per soc_inc_per env_protec_per elf high_school_percent ageatelection female politicalaffiliation, r
+no observations
+r(2000);
+
+end of do-file
+
+r(2000);
+
+. do "/var/folders/77/r2kbz41j5hz_44s8bp00q04m0000gn/T//SD22128.000000"
+
+. regress rel_chgnl local_cop, r
+
+Linear regression                               Number of obs     =        691
+                                                F(1, 689)         =      27.21
+                                                Prob > F          =     0.0000
+                                                R-squared         =     0.0420
+                                                Root MSE          =      .1607
+
+------------------------------------------------------------------------------
+             |               Robust
+   rel_chgnl | Coefficient  std. err.      t    P>|t|     [95% conf. interval]
+-------------+----------------------------------------------------------------
+   local_cop |   .0010935   .0002096     5.22   0.000     .0006819    .0015051
+       _cons |   .3028634   .0088294    34.30   0.000     .2855277    .3201992
+------------------------------------------------------------------------------
+
+. outreg2 using v3_lisa_regression.doc, replace dec(3)
+v3_lisa_regression.doc
+dir : seeout
+
+. 
+. regress rel_chgnl local_cop ln_baseline_nl_km, r
+
+Linear regression                               Number of obs     =        691
+                                                F(2, 688)         =      32.06
+                                                Prob > F          =     0.0000
+                                                R-squared         =     0.1131
+                                                Root MSE          =     .15474
+
+-----------------------------------------------------------------------------------
+                  |               Robust
+        rel_chgnl | Coefficient  std. err.      t    P>|t|     [95% conf. interval]
+------------------+----------------------------------------------------------------
+        local_cop |   .0009742   .0002034     4.79   0.000     .0005749    .0013735
+ln_baseline_nl_km |   .0768316   .0134978     5.69   0.000     .0503298    .1033333
+            _cons |   .2823885   .0082754    34.12   0.000     .2661404    .2986365
+-----------------------------------------------------------------------------------
+
+. outreg2 using v3_lisa_regression.doc, append dec(3)
+v3_lisa_regression.doc
+dir : seeout
+
+. 
+. regress rel_chgnl local_cop ln_baseline_nl_km gov_magm_per org_admin_per budg_magm_per fiscal_magm_per phy_infr
+> a_per soc_inc_per env_protec_per, r
+
+Linear regression                               Number of obs     =        691
+                                                F(9, 681)         =       8.67
+                                                Prob > F          =     0.0000
+                                                R-squared         =     0.1203
+                                                Root MSE          =      .1549
+
+-----------------------------------------------------------------------------------
+                  |               Robust
+        rel_chgnl | Coefficient  std. err.      t    P>|t|     [95% conf. interval]
+------------------+----------------------------------------------------------------
+        local_cop |   .0009519   .0002335     4.08   0.000     .0004934    .0014104
+ln_baseline_nl_km |   .0734237   .0135522     5.42   0.000     .0468145    .1000329
+     gov_magm_per |   -.000123    .000723    -0.17   0.865    -.0015426    .0012966
+    org_admin_per |  -.0005944   .0005477    -1.09   0.278    -.0016698    .0004811
+    budg_magm_per |  -.0000152   .0005779    -0.03   0.979      -.00115    .0011195
+  fiscal_magm_per |  -.0004046   .0006121    -0.66   0.509    -.0016064    .0007973
+    phy_infra_per |    .000747   .0004389     1.70   0.089    -.0001146    .0016087
+      soc_inc_per |    .000354   .0003713     0.95   0.341     -.000375    .0010829
+   env_protec_per |  -.0002449   .0004945    -0.50   0.621    -.0012158    .0007261
+            _cons |   .3218093   .0577291     5.57   0.000     .2084608    .4351578
+-----------------------------------------------------------------------------------
+
+. outreg2 using v3_lisa_regression.doc, append dec(3)
+v3_lisa_regression.doc
+dir : seeout
+
+. 
+. regress rel_chgnl local_cop ln_baseline_nl_km gov_magm_per org_admin_per budg_magm_per fiscal_magm_per phy_infr
+> a_per soc_inc_per env_protec_per elf, r
+
+Linear regression                               Number of obs     =        691
+                                                F(10, 680)        =      11.20
+                                                Prob > F          =     0.0000
+                                                R-squared         =     0.1316
+                                                Root MSE          =     .15401
+
+-----------------------------------------------------------------------------------
+                  |               Robust
+        rel_chgnl | Coefficient  std. err.      t    P>|t|     [95% conf. interval]
+------------------+----------------------------------------------------------------
+        local_cop |   .0008967   .0002313     3.88   0.000     .0004425    .0013509
+ln_baseline_nl_km |   .0597428   .0151151     3.95   0.000     .0300649    .0894208
+     gov_magm_per |  -.0000256   .0007116    -0.04   0.971    -.0014229    .0013716
+    org_admin_per |  -.0005925   .0005423    -1.09   0.275    -.0016573    .0004724
+    budg_magm_per |  -.0000794   .0005759    -0.14   0.890    -.0012101    .0010514
+  fiscal_magm_per |  -.0003277   .0006052    -0.54   0.588     -.001516    .0008606
+    phy_infra_per |   .0006725   .0004395     1.53   0.126    -.0001904    .0015355
+      soc_inc_per |   .0004043   .0003677     1.10   0.272    -.0003177    .0011263
+   env_protec_per |  -.0002979    .000493    -0.60   0.546     -.001266    .0006702
+              elf |   .1242344   .0348596     3.56   0.000     .0557891    .1926797
+            _cons |    .227392   .0572474     3.97   0.000     .1149891     .339795
+-----------------------------------------------------------------------------------
+
+. outreg2 using v3_lisa_regression.doc, append dec(3)
+v3_lisa_regression.doc
+dir : seeout
+
+. 
+. regress rel_chgnl local_cop ln_baseline_nl_km gov_magm_per org_admin_per budg_magm_per fiscal_magm_per phy_infr
+> a_per soc_inc_per env_protec_per elf high_school_percent, r
+
+Linear regression                               Number of obs     =        691
+                                                F(11, 679)        =      17.48
+                                                Prob > F          =     0.0000
+                                                R-squared         =     0.1912
+                                                Root MSE          =     .14874
+
+-------------------------------------------------------------------------------------
+                    |               Robust
+          rel_chgnl | Coefficient  std. err.      t    P>|t|     [95% conf. interval]
+--------------------+----------------------------------------------------------------
+          local_cop |   .0007468   .0002221     3.36   0.001     .0003106    .0011829
+  ln_baseline_nl_km |   .0294483   .0137788     2.14   0.033     .0023942    .0565024
+       gov_magm_per |  -.0004344   .0006976    -0.62   0.534    -.0018041    .0009353
+      org_admin_per |  -.0002071   .0005246    -0.39   0.693    -.0012373     .000823
+      budg_magm_per |  -6.60e-06   .0005581    -0.01   0.991    -.0011024    .0010892
+    fiscal_magm_per |  -.0005654    .000583    -0.97   0.333    -.0017102    .0005794
+      phy_infra_per |   .0004954   .0004363     1.14   0.257    -.0003612     .001352
+        soc_inc_per |   .0002133   .0003563     0.60   0.550    -.0004864     .000913
+     env_protec_per |   -.000794   .0004817    -1.65   0.100    -.0017399    .0001518
+                elf |   .1489463   .0311037     4.79   0.000     .0878754    .2100172
+high_school_percent |   .0091483   .0013777     6.64   0.000     .0064432    .0118534
+              _cons |   .1889153   .0557673     3.39   0.001     .0794183    .2984123
+-------------------------------------------------------------------------------------
+
+. outreg2 using v3_lisa_regression.doc, append dec(3)
+v3_lisa_regression.doc
+dir : seeout
+
+. 
+. regress rel_chgnl local_cop ln_baseline_nl_km gov_magm_per org_admin_per budg_magm_per fiscal_magm_per phy_infr
+> a_per soc_inc_per env_protec_per elf high_school_percent ageatelection, r
+
+Linear regression                               Number of obs     =        691
+                                                F(12, 678)        =      16.05
+                                                Prob > F          =     0.0000
+                                                R-squared         =     0.1920
+                                                Root MSE          =     .14878
+
+-------------------------------------------------------------------------------------
+                    |               Robust
+          rel_chgnl | Coefficient  std. err.      t    P>|t|     [95% conf. interval]
+--------------------+----------------------------------------------------------------
+          local_cop |   .0007624   .0002253     3.38   0.001     .0003201    .0012048
+  ln_baseline_nl_km |   .0302148   .0139396     2.17   0.031     .0028448    .0575848
+       gov_magm_per |  -.0003781   .0006953    -0.54   0.587    -.0017432     .000987
+      org_admin_per |  -.0002166    .000524    -0.41   0.679    -.0012454    .0008122
+      budg_magm_per |  -8.71e-06   .0005592    -0.02   0.988    -.0011067    .0010892
+    fiscal_magm_per |  -.0005683   .0005826    -0.98   0.330    -.0017123    .0005756
+      phy_infra_per |   .0005244   .0004354     1.20   0.229    -.0003305    .0013794
+        soc_inc_per |   .0002119    .000358     0.59   0.554     -.000491    .0009148
+     env_protec_per |  -.0008439   .0004874    -1.73   0.084     -.001801    .0001131
+                elf |    .150872   .0313573     4.81   0.000     .0893028    .2124412
+high_school_percent |   .0092127   .0013768     6.69   0.000     .0065094    .0119159
+      ageatelection |  -.0005067   .0006238    -0.81   0.417    -.0017315    .0007181
+              _cons |   .2077382   .0636457     3.26   0.001     .0827718    .3327047
+-------------------------------------------------------------------------------------
+
+. outreg2 using v3_lisa_regression.doc, append dec(3)
+v3_lisa_regression.doc
+dir : seeout
+
+. 
+. regress rel_chgnl local_cop ln_baseline_nl_km gov_magm_per org_admin_per budg_magm_per fiscal_magm_per phy_infr
+> a_per soc_inc_per env_protec_per elf high_school_percent ageatelection female, r
+
+Linear regression                               Number of obs     =        691
+                                                F(13, 677)        =      15.27
+                                                Prob > F          =     0.0000
+                                                R-squared         =     0.1953
+                                                Root MSE          =     .14858
+
+-------------------------------------------------------------------------------------
+                    |               Robust
+          rel_chgnl | Coefficient  std. err.      t    P>|t|     [95% conf. interval]
+--------------------+----------------------------------------------------------------
+          local_cop |   .0007546   .0002253     3.35   0.001     .0003122     .001197
+  ln_baseline_nl_km |   .0307201   .0138581     2.22   0.027     .0035102    .0579301
+       gov_magm_per |  -.0003963   .0006976    -0.57   0.570     -.001766    .0009734
+      org_admin_per |  -.0002136   .0005239    -0.41   0.684    -.0012424    .0008151
+      budg_magm_per |   .0000557   .0005647     0.10   0.921    -.0010531    .0011646
+    fiscal_magm_per |  -.0005911   .0005866    -1.01   0.314     -.001743    .0005608
+      phy_infra_per |   .0005361    .000435     1.23   0.218    -.0003179    .0013902
+        soc_inc_per |   .0001693   .0003572     0.47   0.636    -.0005321    .0008708
+     env_protec_per |  -.0008312   .0004844    -1.72   0.087    -.0017824    .0001199
+                elf |   .1523266   .0313329     4.86   0.000     .0908052     .213848
+high_school_percent |   .0090989   .0013796     6.60   0.000       .00639    .0118077
+      ageatelection |  -.0004292   .0006291    -0.68   0.495    -.0016645     .000806
+             female |   .0681036   .0492785     1.38   0.167    -.0286535    .1648608
+              _cons |   .2028122   .0638735     3.18   0.002     .0773983    .3282261
+-------------------------------------------------------------------------------------
+
+. outreg2 using v3_lisa_regression.doc, append dec(3)
+v3_lisa_regression.doc
+dir : seeout
+
+. 
+. 
+. regress rel_chgnl local_cop ln_baseline_nl_km gov_magm_per org_admin_per budg_magm_per fiscal_magm_per phy_infr
+> a_per soc_inc_per env_protec_per elf high_school_percent ageatelection female politicalaffiliation, r
+no observations
+r(2000);
+
+end of do-file
+
+r(2000);
+
+. do "/var/folders/77/r2kbz41j5hz_44s8bp00q04m0000gn/T//SD22128.000000"
+
+. regress rel_chgnl local_cop, r
+
+Linear regression                               Number of obs     =        691
+                                                F(1, 689)         =      27.21
+                                                Prob > F          =     0.0000
+                                                R-squared         =     0.0420
+                                                Root MSE          =      .1607
+
+------------------------------------------------------------------------------
+             |               Robust
+   rel_chgnl | Coefficient  std. err.      t    P>|t|     [95% conf. interval]
+-------------+----------------------------------------------------------------
+   local_cop |   .0010935   .0002096     5.22   0.000     .0006819    .0015051
+       _cons |   .3028634   .0088294    34.30   0.000     .2855277    .3201992
+------------------------------------------------------------------------------
+
+. outreg2 using v3_lisa_regression.doc, replace dec(3)
+v3_lisa_regression.doc
+dir : seeout
+
+. 
+. regress rel_chgnl local_cop ln_baseline_nl_km, r
+
+Linear regression                               Number of obs     =        691
+                                                F(2, 688)         =      32.06
+                                                Prob > F          =     0.0000
+                                                R-squared         =     0.1131
+                                                Root MSE          =     .15474
+
+-----------------------------------------------------------------------------------
+                  |               Robust
+        rel_chgnl | Coefficient  std. err.      t    P>|t|     [95% conf. interval]
+------------------+----------------------------------------------------------------
+        local_cop |   .0009742   .0002034     4.79   0.000     .0005749    .0013735
+ln_baseline_nl_km |   .0768316   .0134978     5.69   0.000     .0503298    .1033333
+            _cons |   .2823885   .0082754    34.12   0.000     .2661404    .2986365
+-----------------------------------------------------------------------------------
+
+. outreg2 using v3_lisa_regression.doc, append dec(3)
+v3_lisa_regression.doc
+dir : seeout
+
+. 
+. regress rel_chgnl local_cop ln_baseline_nl_km gov_magm_per org_admin_per budg_magm_per fiscal_magm_per phy_infr
+> a_per soc_inc_per env_protec_per, r
+
+Linear regression                               Number of obs     =        691
+                                                F(9, 681)         =       8.67
+                                                Prob > F          =     0.0000
+                                                R-squared         =     0.1203
+                                                Root MSE          =      .1549
+
+-----------------------------------------------------------------------------------
+                  |               Robust
+        rel_chgnl | Coefficient  std. err.      t    P>|t|     [95% conf. interval]
+------------------+----------------------------------------------------------------
+        local_cop |   .0009519   .0002335     4.08   0.000     .0004934    .0014104
+ln_baseline_nl_km |   .0734237   .0135522     5.42   0.000     .0468145    .1000329
+     gov_magm_per |   -.000123    .000723    -0.17   0.865    -.0015426    .0012966
+    org_admin_per |  -.0005944   .0005477    -1.09   0.278    -.0016698    .0004811
+    budg_magm_per |  -.0000152   .0005779    -0.03   0.979      -.00115    .0011195
+  fiscal_magm_per |  -.0004046   .0006121    -0.66   0.509    -.0016064    .0007973
+    phy_infra_per |    .000747   .0004389     1.70   0.089    -.0001146    .0016087
+      soc_inc_per |    .000354   .0003713     0.95   0.341     -.000375    .0010829
+   env_protec_per |  -.0002449   .0004945    -0.50   0.621    -.0012158    .0007261
+            _cons |   .3218093   .0577291     5.57   0.000     .2084608    .4351578
+-----------------------------------------------------------------------------------
+
+. outreg2 using v3_lisa_regression.doc, append dec(3)
+v3_lisa_regression.doc
+dir : seeout
+
+. 
+. regress rel_chgnl local_cop ln_baseline_nl_km gov_magm_per org_admin_per budg_magm_per fiscal_magm_per phy_infr
+> a_per soc_inc_per env_protec_per elf, r
+
+Linear regression                               Number of obs     =        691
+                                                F(10, 680)        =      11.20
+                                                Prob > F          =     0.0000
+                                                R-squared         =     0.1316
+                                                Root MSE          =     .15401
+
+-----------------------------------------------------------------------------------
+                  |               Robust
+        rel_chgnl | Coefficient  std. err.      t    P>|t|     [95% conf. interval]
+------------------+----------------------------------------------------------------
+        local_cop |   .0008967   .0002313     3.88   0.000     .0004425    .0013509
+ln_baseline_nl_km |   .0597428   .0151151     3.95   0.000     .0300649    .0894208
+     gov_magm_per |  -.0000256   .0007116    -0.04   0.971    -.0014229    .0013716
+    org_admin_per |  -.0005925   .0005423    -1.09   0.275    -.0016573    .0004724
+    budg_magm_per |  -.0000794   .0005759    -0.14   0.890    -.0012101    .0010514
+  fiscal_magm_per |  -.0003277   .0006052    -0.54   0.588     -.001516    .0008606
+    phy_infra_per |   .0006725   .0004395     1.53   0.126    -.0001904    .0015355
+      soc_inc_per |   .0004043   .0003677     1.10   0.272    -.0003177    .0011263
+   env_protec_per |  -.0002979    .000493    -0.60   0.546     -.001266    .0006702
+              elf |   .1242344   .0348596     3.56   0.000     .0557891    .1926797
+            _cons |    .227392   .0572474     3.97   0.000     .1149891     .339795
+-----------------------------------------------------------------------------------
+
+. outreg2 using v3_lisa_regression.doc, append dec(3)
+v3_lisa_regression.doc
+dir : seeout
+
+. 
+. regress rel_chgnl local_cop ln_baseline_nl_km gov_magm_per org_admin_per budg_magm_per fiscal_magm_per phy_infr
+> a_per soc_inc_per env_protec_per elf high_school_percent, r
+
+Linear regression                               Number of obs     =        691
+                                                F(11, 679)        =      17.48
+                                                Prob > F          =     0.0000
+                                                R-squared         =     0.1912
+                                                Root MSE          =     .14874
+
+-------------------------------------------------------------------------------------
+                    |               Robust
+          rel_chgnl | Coefficient  std. err.      t    P>|t|     [95% conf. interval]
+--------------------+----------------------------------------------------------------
+          local_cop |   .0007468   .0002221     3.36   0.001     .0003106    .0011829
+  ln_baseline_nl_km |   .0294483   .0137788     2.14   0.033     .0023942    .0565024
+       gov_magm_per |  -.0004344   .0006976    -0.62   0.534    -.0018041    .0009353
+      org_admin_per |  -.0002071   .0005246    -0.39   0.693    -.0012373     .000823
+      budg_magm_per |  -6.60e-06   .0005581    -0.01   0.991    -.0011024    .0010892
+    fiscal_magm_per |  -.0005654    .000583    -0.97   0.333    -.0017102    .0005794
+      phy_infra_per |   .0004954   .0004363     1.14   0.257    -.0003612     .001352
+        soc_inc_per |   .0002133   .0003563     0.60   0.550    -.0004864     .000913
+     env_protec_per |   -.000794   .0004817    -1.65   0.100    -.0017399    .0001518
+                elf |   .1489463   .0311037     4.79   0.000     .0878754    .2100172
+high_school_percent |   .0091483   .0013777     6.64   0.000     .0064432    .0118534
+              _cons |   .1889153   .0557673     3.39   0.001     .0794183    .2984123
+-------------------------------------------------------------------------------------
+
+. outreg2 using v3_lisa_regression.doc, append dec(3)
+v3_lisa_regression.doc
+dir : seeout
+
+. 
+. regress rel_chgnl local_cop ln_baseline_nl_km gov_magm_per org_admin_per budg_magm_per fiscal_magm_per phy_infr
+> a_per soc_inc_per env_protec_per elf high_school_percent ageatelection, r
+
+Linear regression                               Number of obs     =        691
+                                                F(12, 678)        =      16.05
+                                                Prob > F          =     0.0000
+                                                R-squared         =     0.1920
+                                                Root MSE          =     .14878
+
+-------------------------------------------------------------------------------------
+                    |               Robust
+          rel_chgnl | Coefficient  std. err.      t    P>|t|     [95% conf. interval]
+--------------------+----------------------------------------------------------------
+          local_cop |   .0007624   .0002253     3.38   0.001     .0003201    .0012048
+  ln_baseline_nl_km |   .0302148   .0139396     2.17   0.031     .0028448    .0575848
+       gov_magm_per |  -.0003781   .0006953    -0.54   0.587    -.0017432     .000987
+      org_admin_per |  -.0002166    .000524    -0.41   0.679    -.0012454    .0008122
+      budg_magm_per |  -8.71e-06   .0005592    -0.02   0.988    -.0011067    .0010892
+    fiscal_magm_per |  -.0005683   .0005826    -0.98   0.330    -.0017123    .0005756
+      phy_infra_per |   .0005244   .0004354     1.20   0.229    -.0003305    .0013794
+        soc_inc_per |   .0002119    .000358     0.59   0.554     -.000491    .0009148
+     env_protec_per |  -.0008439   .0004874    -1.73   0.084     -.001801    .0001131
+                elf |    .150872   .0313573     4.81   0.000     .0893028    .2124412
+high_school_percent |   .0092127   .0013768     6.69   0.000     .0065094    .0119159
+      ageatelection |  -.0005067   .0006238    -0.81   0.417    -.0017315    .0007181
+              _cons |   .2077382   .0636457     3.26   0.001     .0827718    .3327047
+-------------------------------------------------------------------------------------
+
+. outreg2 using v3_lisa_regression.doc, append dec(3)
+v3_lisa_regression.doc
+dir : seeout
+
+. 
+. regress rel_chgnl local_cop ln_baseline_nl_km gov_magm_per org_admin_per budg_magm_per fiscal_magm_per phy_infr
+> a_per soc_inc_per env_protec_per elf high_school_percent ageatelection female, r
+
+Linear regression                               Number of obs     =        691
+                                                F(13, 677)        =      15.27
+                                                Prob > F          =     0.0000
+                                                R-squared         =     0.1953
+                                                Root MSE          =     .14858
+
+-------------------------------------------------------------------------------------
+                    |               Robust
+          rel_chgnl | Coefficient  std. err.      t    P>|t|     [95% conf. interval]
+--------------------+----------------------------------------------------------------
+          local_cop |   .0007546   .0002253     3.35   0.001     .0003122     .001197
+  ln_baseline_nl_km |   .0307201   .0138581     2.22   0.027     .0035102    .0579301
+       gov_magm_per |  -.0003963   .0006976    -0.57   0.570     -.001766    .0009734
+      org_admin_per |  -.0002136   .0005239    -0.41   0.684    -.0012424    .0008151
+      budg_magm_per |   .0000557   .0005647     0.10   0.921    -.0010531    .0011646
+    fiscal_magm_per |  -.0005911   .0005866    -1.01   0.314     -.001743    .0005608
+      phy_infra_per |   .0005361    .000435     1.23   0.218    -.0003179    .0013902
+        soc_inc_per |   .0001693   .0003572     0.47   0.636    -.0005321    .0008708
+     env_protec_per |  -.0008312   .0004844    -1.72   0.087    -.0017824    .0001199
+                elf |   .1523266   .0313329     4.86   0.000     .0908052     .213848
+high_school_percent |   .0090989   .0013796     6.60   0.000       .00639    .0118077
+      ageatelection |  -.0004292   .0006291    -0.68   0.495    -.0016645     .000806
+             female |   .0681036   .0492785     1.38   0.167    -.0286535    .1648608
+              _cons |   .2028122   .0638735     3.18   0.002     .0773983    .3282261
+-------------------------------------------------------------------------------------
+
+. outreg2 using v3_lisa_regression.doc, append dec(3)
+v3_lisa_regression.doc
+dir : seeout
+
+. 
+. 
+. regress rel_chgnl local_cop ln_baseline_nl_km gov_magm_per org_admin_per budg_magm_per fiscal_magm_per phy_infr
+> a_per soc_inc_per env_protec_per elf high_school_percent ageatelection female gov_coalitiion, r
+
+Linear regression                               Number of obs     =        691
+                                                F(14, 676)        =      14.19
+                                                Prob > F          =     0.0000
+                                                R-squared         =     0.1983
+                                                Root MSE          =     .14842
+
+-------------------------------------------------------------------------------------
+                    |               Robust
+          rel_chgnl | Coefficient  std. err.      t    P>|t|     [95% conf. interval]
+--------------------+----------------------------------------------------------------
+          local_cop |   .0007572    .000227     3.34   0.001     .0003116    .0012029
+  ln_baseline_nl_km |    .029604   .0137059     2.16   0.031     .0026928    .0565152
+       gov_magm_per |  -.0003793   .0006917    -0.55   0.584    -.0017374    .0009788
+      org_admin_per |   -.000234   .0005223    -0.45   0.654    -.0012595    .0007916
+      budg_magm_per |   .0000911   .0005645     0.16   0.872    -.0010173    .0011996
+    fiscal_magm_per |  -.0005832   .0005853    -1.00   0.319    -.0017325     .000566
+      phy_infra_per |   .0005928    .000433     1.37   0.171    -.0002573    .0014429
+        soc_inc_per |   .0001698   .0003578     0.47   0.635    -.0005328    .0008724
+     env_protec_per |  -.0008728   .0004883    -1.79   0.074    -.0018316     .000086
+                elf |   .1524274   .0311272     4.90   0.000     .0913099     .213545
+high_school_percent |   .0093132   .0013858     6.72   0.000     .0065922    .0120341
+      ageatelection |  -.0005649   .0006391    -0.88   0.377    -.0018199      .00069
+             female |   .0681091   .0506258     1.35   0.179    -.0312936    .1675118
+     gov_coalitiion |   -.018607   .0117045    -1.59   0.112    -.0415885    .0043746
+              _cons |   .2145304   .0654019     3.28   0.001     .0861151    .3429457
+-------------------------------------------------------------------------------------
+
+. outreg2 using v3_lisa_regression.doc, append dec(3)
+v3_lisa_regression.doc
+dir : seeout
+
+. 
+. regress rel_chgnl local_cop ln_baseline_nl_km gov_magm_per org_admin_per budg_magm_per fiscal_magm_per phy_infr
+> a_per soc_inc_per env_protec_per elf high_school_percent ageatelection female gov_coalitiion ln_popn, r
+
+Linear regression                               Number of obs     =        691
+                                                F(15, 675)        =      14.37
+                                                Prob > F          =     0.0000
+                                                R-squared         =     0.2170
+                                                Root MSE          =     .14679
+
+-------------------------------------------------------------------------------------
+                    |               Robust
+          rel_chgnl | Coefficient  std. err.      t    P>|t|     [95% conf. interval]
+--------------------+----------------------------------------------------------------
+          local_cop |   .0007117   .0002228     3.19   0.001     .0002742    .0011493
+  ln_baseline_nl_km |  -.0016655   .0165366    -0.10   0.920    -.0341348    .0308038
+       gov_magm_per |   -.000458   .0006936    -0.66   0.509    -.0018199    .0009039
+      org_admin_per |   .0000545   .0005135     0.11   0.915    -.0009536    .0010627
+      budg_magm_per |   .0000945   .0005513     0.17   0.864    -.0009879     .001177
+    fiscal_magm_per |  -.0006103   .0005813    -1.05   0.294    -.0017517     .000531
+      phy_infra_per |   .0003662   .0004322     0.85   0.397    -.0004824    .0012147
+        soc_inc_per |   .0001656   .0003478     0.48   0.634    -.0005172    .0008485
+     env_protec_per |  -.0011607   .0004839    -2.40   0.017    -.0021109   -.0002105
+                elf |   .1152161   .0319026     3.61   0.000     .0525759    .1778563
+high_school_percent |   .0090137   .0013534     6.66   0.000     .0063564    .0116711
+      ageatelection |  -.0006175   .0006243    -0.99   0.323    -.0018433    .0006083
+             female |   .0619148   .0508031     1.22   0.223    -.0378364    .1616659
+     gov_coalitiion |  -.0194831    .011578    -1.68   0.093    -.0422164    .0032501
+            ln_popn |    .042204   .0093489     4.51   0.000     .0238477    .0605604
+              _cons |  -.1606344    .108804    -1.48   0.140    -.3742693    .0530005
+-------------------------------------------------------------------------------------
+
+. outreg2 using v3_lisa_regression.doc, append dec(3) 
+v3_lisa_regression.doc
+dir : seeout
+
+. 
+. regress rel_chgnl local_cop ln_baseline_nl_km gov_magm_per org_admin_per budg_magm_per fiscal_magm_per phy_infr
+> a_per soc_inc_per env_protec_per elf high_school_percent ageatelection female gov_coalitiion ln_popn urban_num,
+>  r
+
+Linear regression                               Number of obs     =        691
+                                                F(16, 674)        =      13.31
+                                                Prob > F          =     0.0000
+                                                R-squared         =     0.2217
+                                                Root MSE          =     .14646
+
+-------------------------------------------------------------------------------------
+                    |               Robust
+          rel_chgnl | Coefficient  std. err.      t    P>|t|     [95% conf. interval]
+--------------------+----------------------------------------------------------------
+          local_cop |     .00072   .0002218     3.25   0.001     .0002845    .0011555
+  ln_baseline_nl_km |  -.0060114   .0168178    -0.36   0.721     -.039033    .0270102
+       gov_magm_per |  -.0004916    .000695    -0.71   0.480    -.0018562     .000873
+      org_admin_per |   .0000514   .0005072     0.10   0.919    -.0009445    .0010473
+      budg_magm_per |   .0000778   .0005552     0.14   0.889    -.0010123    .0011679
+    fiscal_magm_per |   -.000725   .0005767    -1.26   0.209    -.0018573    .0004073
+      phy_infra_per |   .0004348   .0004292     1.01   0.311    -.0004078    .0012775
+        soc_inc_per |   .0001859   .0003464     0.54   0.592    -.0004942     .000866
+     env_protec_per |  -.0011184   .0004789    -2.34   0.020    -.0020588    -.000178
+                elf |   .1228579   .0329014     3.73   0.000     .0582563    .1874596
+high_school_percent |   .0096402   .0014198     6.79   0.000     .0068524     .012428
+      ageatelection |  -.0006765   .0006251    -1.08   0.279    -.0019038    .0005508
+             female |   .0593652   .0506342     1.17   0.241    -.0400546    .1587849
+     gov_coalitiion |  -.0211428   .0115961    -1.82   0.069    -.0439116     .001626
+            ln_popn |   .0537033   .0114701     4.68   0.000      .031182    .0762247
+          urban_num |  -.0309842   .0167043    -1.85   0.064    -.0637829    .0018145
+              _cons |  -.2668872   .1300199    -2.05   0.040    -.5221801   -.0115944
+-------------------------------------------------------------------------------------
+
+. outreg2 using v3_lisa_regression.doc, append dec(3)
+v3_lisa_regression.doc
+dir : seeout
+
+. 
+end of do-file
+
+. do "/var/folders/77/r2kbz41j5hz_44s8bp00q04m0000gn/T//SD22128.000000"
+
+. regress local_cop neighbor_dummy, r
+
+Linear regression                               Number of obs     =        691
+                                                F(1, 689)         =       8.52
+                                                Prob > F          =     0.0036
+                                                R-squared         =     0.0125
+                                                Root MSE          =      30.58
+
+--------------------------------------------------------------------------------
+               |               Robust
+     local_cop | Coefficient  std. err.      t    P>|t|     [95% conf. interval]
+---------------+----------------------------------------------------------------
+neighbor_dummy |   6.997585   2.397899     2.92   0.004     2.289519    11.70565
+         _cons |   29.59142   1.469972    20.13   0.000     26.70526    32.47759
+--------------------------------------------------------------------------------
+
+. outreg2 using instru_regression.doc, replace dec(3)
+instru_regression.doc
+dir : seeout
+
+. 
+. regress local_cop neighbor_dummy elf, r
+
+Linear regression                               Number of obs     =        691
+                                                F(2, 688)         =      12.93
+                                                Prob > F          =     0.0000
+                                                R-squared         =     0.0326
+                                                Root MSE          =     30.288
+
+--------------------------------------------------------------------------------
+               |               Robust
+     local_cop | Coefficient  std. err.      t    P>|t|     [95% conf. interval]
+---------------+----------------------------------------------------------------
+neighbor_dummy |   7.951901   2.377575     3.34   0.001     3.283727    12.62008
+           elf |   27.86483   6.650161     4.19   0.000     14.80778    40.92187
+         _cons |   8.164844   5.152587     1.58   0.114    -1.951838    18.28153
+--------------------------------------------------------------------------------
+
+. outreg2 using instru_regression.doc, append dec(3)
+instru_regression.doc
+dir : seeout
+
+. 
+. regress local_cop neighbor_dummy elf high_school_percent, r
+
+Linear regression                               Number of obs     =        691
+                                                F(3, 687)         =      23.04
+                                                Prob > F          =     0.0000
+                                                R-squared         =     0.0953
+                                                Root MSE          =     29.311
+
+-------------------------------------------------------------------------------------
+                    |               Robust
+          local_cop | Coefficient  std. err.      t    P>|t|     [95% conf. interval]
+--------------------+----------------------------------------------------------------
+     neighbor_dummy |   5.407411   2.305915     2.35   0.019     .8799249    9.934897
+                elf |   21.70414      6.658     3.26   0.001     8.631668    34.77661
+high_school_percent |   1.542584   .2246764     6.87   0.000     1.101449    1.983719
+              _cons |  -1.853406   5.452661    -0.34   0.734    -12.55929    8.852475
+-------------------------------------------------------------------------------------
+
+. outreg2 using instru_regression.doc, append dec(3)
+instru_regression.doc
+dir : seeout
+
+. 
+. regress local_cop neighbor_dummy elf high_school_percent ln_popn, r
+
+Linear regression                               Number of obs     =        691
+                                                F(4, 686)         =      18.46
+                                                Prob > F          =     0.0000
+                                                R-squared         =     0.1054
+                                                Root MSE          =      29.17
+
+-------------------------------------------------------------------------------------
+                    |               Robust
+          local_cop | Coefficient  std. err.      t    P>|t|     [95% conf. interval]
+--------------------+----------------------------------------------------------------
+     neighbor_dummy |   5.599441     2.2874     2.45   0.015     1.108296    10.09059
+                elf |   12.10237   7.427174     1.63   0.104    -2.480356    26.68509
+high_school_percent |   1.324435   .2366268     5.60   0.000     .8598354    1.789035
+            ln_popn |   4.671829   1.756468     2.66   0.008     1.223129    8.120528
+              _cons |  -40.26504   15.60309    -2.58   0.010    -70.90058     -9.6295
+-------------------------------------------------------------------------------------
+
+. outreg2 using instru_regression.doc, append dec(3)
+instru_regression.doc
+dir : seeout
+
+. 
+. regress local_cop neighbor_dummy elf high_school_percent ln_popn urban_num, r
+
+Linear regression                               Number of obs     =        691
+                                                F(5, 685)         =      15.36
+                                                Prob > F          =     0.0000
+                                                R-squared         =     0.1068
+                                                Root MSE          =     29.168
+
+-------------------------------------------------------------------------------------
+                    |               Robust
+          local_cop | Coefficient  std. err.      t    P>|t|     [95% conf. interval]
+--------------------+----------------------------------------------------------------
+     neighbor_dummy |   5.522623   2.286385     2.42   0.016     1.033458    10.01179
+                elf |   11.51137   7.475978     1.54   0.124     -3.16721    26.18996
+high_school_percent |     1.2699    .243764     5.21   0.000     .7912852    1.748514
+            ln_popn |   3.637882   1.967528     1.85   0.065    -.2252292    7.500992
+          urban_num |    3.11169   3.015096     1.03   0.302     -2.80825     9.03163
+              _cons |  -29.87778   18.18266    -1.64   0.101    -65.57821    5.822651
+-------------------------------------------------------------------------------------
+
+. outreg2 using instru_regression.doc, append dec(3)
+instru_regression.doc
+dir : seeout
+
+. 
+. regress local_cop neighbor_dummy elf high_school_percent ln_popn urban_num ageatelection, r
+
+Linear regression                               Number of obs     =        691
+                                                F(6, 684)         =      14.08
+                                                Prob > F          =     0.0000
+                                                R-squared         =     0.1128
+                                                Root MSE          =      29.09
+
+-------------------------------------------------------------------------------------
+                    |               Robust
+          local_cop | Coefficient  std. err.      t    P>|t|     [95% conf. interval]
+--------------------+----------------------------------------------------------------
+     neighbor_dummy |   5.254692   2.290741     2.29   0.022     .7569632    9.752421
+                elf |   10.22465   7.480718     1.37   0.172    -4.463276    24.91258
+high_school_percent |    1.22172   .2440976     5.01   0.000     .7424494    1.700991
+            ln_popn |   3.315248   1.969284     1.68   0.093    -.5513191    7.181814
+          urban_num |    3.40412   3.002896     1.13   0.257    -2.491881    9.300122
+      ageatelection |   .2591493   .1263457     2.05   0.041     .0110774    .5072212
+              _cons |  -37.68212    18.5791    -2.03   0.043    -74.16104   -1.203197
+-------------------------------------------------------------------------------------
+
+. outreg2 using instru_regression.doc, append dec(3)
+instru_regression.doc
+dir : seeout
+
+. 
+. regress local_cop neighbor_dummy elf high_school_percent ln_popn urban_num ageatelection female, r
+
+Linear regression                               Number of obs     =        691
+                                                F(7, 683)         =      12.23
+                                                Prob > F          =     0.0000
+                                                R-squared         =     0.1133
+                                                Root MSE          =     29.104
+
+-------------------------------------------------------------------------------------
+                    |               Robust
+          local_cop | Coefficient  std. err.      t    P>|t|     [95% conf. interval]
+--------------------+----------------------------------------------------------------
+     neighbor_dummy |   5.225521   2.289119     2.28   0.023     .7309668    9.720076
+                elf |   10.42652   7.498493     1.39   0.165    -4.296351    25.14938
+high_school_percent |   1.214189   .2446787     4.96   0.000     .7337766    1.694602
+            ln_popn |    3.28838   1.965666     1.67   0.095     -.571095    7.147854
+          urban_num |   3.447611   2.999457     1.15   0.251    -2.441654    9.336875
+      ageatelection |   .2648616   .1266439     2.09   0.037     .0162035    .5135198
+             female |   4.812105    8.23653     0.58   0.559    -11.35985    20.98406
+              _cons |   -37.8627   18.57654    -2.04   0.042    -74.33668   -1.388718
+-------------------------------------------------------------------------------------
+
+. outreg2 using instru_regression.doc, append dec(3)
+instru_regression.doc
+dir : seeout
+
+. 
+. regress local_cop neighbor_dummy elf high_school_percent ln_popn urban_num ageatelection female gov_magm_per or
+> g_admin_per budg_magm_per fiscal_magm_per phy_infra_per soc_inc_per env_protec_per, r
+
+Linear regression                               Number of obs     =        691
+                                                F(14, 676)        =      29.74
+                                                Prob > F          =     0.0000
+                                                R-squared         =     0.3390
+                                                Root MSE          =     25.258
+
+-------------------------------------------------------------------------------------
+                    |               Robust
+          local_cop | Coefficient  std. err.      t    P>|t|     [95% conf. interval]
+--------------------+----------------------------------------------------------------
+     neighbor_dummy |   1.799425   2.065435     0.87   0.384    -2.256014    5.854865
+                elf |   11.99218   6.749135     1.78   0.076    -1.259609    25.24397
+high_school_percent |   .3983793   .2200379     1.81   0.071    -.0336606    .8304192
+            ln_popn |   1.361893   1.725898     0.79   0.430    -2.026872    4.750657
+          urban_num |   1.397647   2.614389     0.53   0.593    -3.735651    6.530946
+      ageatelection |   .2315162   .1081217     2.14   0.033     .0192215     .443811
+             female |    3.58035   6.987539     0.51   0.609    -10.13954    17.30024
+       gov_magm_per |   .1224753   .1024419     1.20   0.232    -.0786673    .3236179
+      org_admin_per |   .0096472   .0810505     0.12   0.905    -.1494939    .1687883
+      budg_magm_per |   .0576571   .0980058     0.59   0.557    -.1347753    .2500895
+    fiscal_magm_per |   .2112856   .0986937     2.14   0.033     .0175026    .4050686
+      phy_infra_per |   .2749851    .079622     3.45   0.001     .1186488    .4313213
+        soc_inc_per |   .0722113    .064872     1.11   0.266    -.0551635    .1995861
+     env_protec_per |   .4523795   .0942322     4.80   0.000     .2673564    .6374025
+              _cons |   -72.3917   16.96208    -4.27   0.000    -105.6964   -39.08701
+-------------------------------------------------------------------------------------
+
+. outreg2 using instru_regression.doc, append dec(3)
+instru_regression.doc
 dir : seeout
 
 . 
